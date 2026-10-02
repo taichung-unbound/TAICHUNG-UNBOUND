@@ -55,7 +55,7 @@ canvas{
   inset:0;
   background:
     url('../taichung-unbound-home-bg.png')
-    center center / contain
+    center center / cover
     no-repeat;
   z-index:1;
 
@@ -531,7 +531,7 @@ h1{
 }
 
 .landing-menu-text{
-  text-align:left;
+  text-align:center;
   font-size:20px;
   font-weight:800;
 }

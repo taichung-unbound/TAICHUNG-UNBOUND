@@ -536,10 +536,8 @@ h1{
 #startGame:hover{
   background:rgba(124,77,255,.18) !important;
   box-shadow:
-    0 0 0 2px rgba(210,190,255,.65),
-    0 0 24px rgba(124,77,255,.75),
-    0 0 48px rgba(124,77,255,.32),
-    inset 0 0 28px rgba(180,150,255,.18);
+    0 0 24px rgba(124,77,255,.55),
+    inset 0 0 28px rgba(180,150,255,.14);
   transform:scale(1.035);
   filter:brightness(1.15);
 }
@@ -548,7 +546,6 @@ h1{
   transform:scale(.975);
   background:rgba(124,77,255,.28) !important;
   box-shadow:
-    0 0 0 2px rgba(230,215,255,.8),
     0 0 16px rgba(124,77,255,.65),
     inset 0 0 34px rgba(124,77,255,.3);
   filter:brightness(1.25);

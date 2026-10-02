@@ -243,6 +243,18 @@ h1{
   background:#7c4dff;
 }
 
+@keyframes loginPanelIn{
+  from{
+    opacity:0;
+    transform:translateX(48px) scale(.98);
+  }
+
+  to{
+    opacity:1;
+    transform:translateX(0) scale(1);
+  }
+}
+  
 @keyframes enterPulse{
   0%,100%{
     box-shadow:
@@ -438,22 +450,39 @@ h1{
   z-index:25;
   display:none;
   align-items:center;
-  justify-content:center;
+  justify-content:flex-end;
+  padding:60px;
+  overflow:hidden;
   background:
-    linear-gradient(rgba(5,7,11,.72),rgba(5,7,11,.88)),
+    linear-gradient(
+      90deg,
+      rgba(4,6,10,.18) 0%,
+      rgba(4,6,10,.34) 45%,
+      rgba(4,6,10,.88) 78%,
+      rgba(4,6,10,.96) 100%
+    ),
     url('./assets/taichung-unbound-cover.png')
     center center / cover no-repeat;
 ">
 
   <div style="
-    width:min(430px,calc(100% - 40px));
-    padding:34px;
-    border:1px solid rgba(255,255,255,.16);
-    border-radius:22px;
-    background:rgba(8,12,20,.88);
-    backdrop-filter:blur(18px);
-    box-shadow:0 30px 80px rgba(0,0,0,.5);
-  ">
+  width:min(460px,100%);
+  padding:38px;
+  animation:loginPanelIn .55s cubic-bezier(.2,.8,.2,1) both;  
+  border:1px solid rgba(177,150,255,.28);
+  border-radius:24px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(14,18,30,.94),
+      rgba(7,10,18,.88)
+    );
+  backdrop-filter:blur(22px);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.04),
+    0 0 46px rgba(124,77,255,.18),
+    0 32px 90px rgba(0,0,0,.6);
+">
 
     <div style="
       color:#b79cff;
@@ -481,57 +510,79 @@ h1{
     </p>
 
     <input
-      type="email"
-      placeholder="Email"
-      style="
-        width:100%;
-        padding:14px 15px;
-        margin-bottom:12px;
-        border:1px solid rgba(255,255,255,.14);
-        border-radius:11px;
-        background:#111827;
-        color:#fff;
-        outline:none;
-      "
-    >
+  type="email"
+  placeholder="輸入 Email"
+  style="
+    width:100%;
+    padding:15px 16px;
+    margin-bottom:12px;
+    border:1px solid rgba(177,150,255,.24);
+    border-radius:12px;
+    background:rgba(12,16,27,.88);
+    color:#fff;
+    outline:none;
+    font-size:15px;
+    box-shadow:
+      inset 0 0 0 1px rgba(255,255,255,.02),
+      0 0 18px rgba(124,77,255,.06);
+  "
+>
 
     <button id="emailLoginBtn" style="
-      width:100%;
-      padding:14px;
-      border:0;
-      border-radius:11px;
-      background:#7c4dff;
-      color:#fff;
-      font-weight:800;
-      cursor:pointer;
-    ">
-      Email 登入
-    </button>
+  width:100%;
+  padding:15px;
+  border:1px solid rgba(190,165,255,.45);
+  border-radius:12px;
+  background:
+    linear-gradient(
+      135deg,
+      #8b5cf6,
+      #6d42c7
+    );
+  color:#fff;
+  font-weight:800;
+  letter-spacing:.04em;
+  cursor:pointer;
+  box-shadow:
+    0 0 22px rgba(124,77,255,.28),
+    0 10px 30px rgba(0,0,0,.28);
+">
+  Email 登入 →
+</button>
 
     <button id="guestLoginBtn" style="
-      width:100%;
-      padding:14px;
-      margin-top:10px;
-      border:1px solid rgba(255,255,255,.16);
-      border-radius:11px;
-      background:rgba(255,255,255,.05);
-      color:#fff;
-      font-weight:700;
-      cursor:pointer;
-    ">
-      訪客進入 Prototype
-    </button>
+  width:100%;
+  padding:14px;
+  margin-top:10px;
+  border:1px solid rgba(177,150,255,.22);
+  border-radius:12px;
+  background:rgba(255,255,255,.035);
+  color:#d7ddea;
+  font-weight:700;
+  letter-spacing:.03em;
+  cursor:pointer;
+  backdrop-filter:blur(10px);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.02),
+    0 8px 24px rgba(0,0,0,.18);
+">
+  訪客進入 Prototype
+</button>
 
-    <button id="backToLandingBtn" style="
-      width:100%;
-      margin-top:16px;
-      border:0;
-      background:none;
-      color:#8f9bad;
-      cursor:pointer;
-    ">
-      ← 返回首頁
-    </button>
+  <button id="backToLandingBtn" style="
+  width:100%;
+  margin-top:18px;
+  padding:10px 12px;
+  border:0;
+  background:transparent;
+  color:#9aa7bc;
+  font-size:13px;
+  letter-spacing:.04em;
+  cursor:pointer;
+  opacity:.9;
+">
+  ← 返回台中無界首頁
+</button>
 
   </div>
 </div>

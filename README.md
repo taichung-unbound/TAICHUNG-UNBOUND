@@ -1,23 +1,34 @@
 # 台中無界｜TAICHUNG: UNBOUND
 
-A cross-era open-world adventure inspired by Taichung, Taiwan.
+**A cross-era open-world adventure inspired by Taichung, Taiwan.**
 
-## 🎮 Project Concept
+《台中無界》是一款以台灣台中為核心的跨年代開放世界遊戲概念作品。
 
-《台中無界》是一款以台灣台中為核心的跨年代開放世界遊戲。
+玩家可以在不同年代與區域之間探索、生活、工作、組隊、犯罪、買房、買車、養寵物，並透過任務認識台中的城市、海線、山線、屯區、美食與地方文化。
 
-玩家可以選擇不同年代與區域，體驗每個時期不同的：
+---
 
-- 城市風貌
-- 鄉村與海線
-- 車輛與機車
-- 美食與市場
-- 夜市與漁港
-- 角色造型
-- 寵物系統
-- 多人組隊任務
-- 城市生活任務
-- 犯罪與追逐玩法
+## 🎮 Core Concept
+
+**真實台中 × 跨年代 × 開放世界 × 多人合作 × 城市生活 × 犯罪任務**
+
+主要特色：
+
+- 高擬真 3D 世界
+- 跨年代台中
+- 自訂角色
+- 寵物夥伴
+- 年代車輛
+- 房屋與資產
+- 生活經濟
+- 外送與工作
+- 犯罪與通緝
+- 多人合作
+- 台中景點與美食
+- 原住民族與地方文化
+- 配音、音樂與環境聲
+
+---
 
 ## 🕰 Era Worlds
 
@@ -27,43 +38,94 @@ A cross-era open-world adventure inspired by Taichung, Taiwan.
 - 1990s｜STREETLINE｜街線
 - 2000s｜NO LIMITS｜無限界
 - Modern｜OUTLAW CITY｜狂城
-- REWIND｜倒帶｜跨年代主線
+- REWIND｜倒帶｜跨年代故事模式
+
+每個年代會同步改變：
+
+- 人物造型
+- 車輛
+- 機車
+- 建築
+- 招牌
+- 科技產品
+- 音樂
+- NPC
+- 任務
+- 城市氛圍
+
+---
 
 ## 🗺 Taichung World
 
-The world will include multiple Taichung regions, such as:
+遊戲世界規劃涵蓋整個台中。
 
-- City Center
-- Dali
-- Wuri
-- Fengyuan
-- Houli
-- Dajia
-- Daan Coast
-- Qingshui
-- Wuqi
-- Gaomei
-- Xinshe
-- Dongshi
-- Guguan
-- Taiping
-- Wufeng
+主要區域：
+
+### 市中心
+- 台中車站
+- 綠川
+- 一中
+- 勤美
+- 草悟道
+- 逢甲
+- 七期
+
+### 海線
+- 大甲
+- 大安
+- 清水
+- 梧棲
+- 沙鹿
+- 龍井
+- 高美
+
+### 山線
+- 豐原
+- 后里
+- 東勢
+- 新社
+- 和平
+- 谷關
+
+### 屯區
+- 大里
+- 太平
+- 烏日
+- 霧峰
+
+採用：
+
+**完整台中世界地圖 + 分區動態載入**
+
+---
 
 ## 👤 Character System
 
-- Custom character creation
-- Male / Female body presets
-- Hairstyles and hair colors
-- Clothing by era
-- Accessories
-- Body customization
-- Era-based outfits
+玩家可以建立自己的角色。
 
-## 🐾 Companion System
+支援：
 
-Cats and dogs can travel with the player.
+- 臉型
+- 膚色
+- 髮型
+- 髮色
+- 身高
+- 身材
+- 服裝
+- 鞋子
+- 配件
+- 背包
+- 年代造型
 
-Planned breeds include:
+角色視覺方向：
+
+**高擬真 3D × 電影感 × 真實人物比例**
+
+---
+
+## 🐾 Pet Companion System
+
+第一版主要規劃：
 
 ### Cats
 - Maine Coon
@@ -83,48 +145,209 @@ Planned breeds include:
 - Husky
 - Schnauzer
 - French Bulldog
+- Pomeranian
+- Mixed Breed
 
-## 🚗 Vehicles
+寵物可：
 
-Each era will feature its own vehicles, including:
+- 跟隨
+- 餵食
+- 撫摸
+- 玩耍
+- 換裝
+- 提升親密度
+- 協助探索
 
-- Cars
-- Motorcycles
-- Scooters
-- Bicycles
-- Delivery vehicles
-- Classic vehicles
-- Modern vehicles
+---
 
-## 🤝 Multiplayer
+## 🏠 Housing & Property
 
-Planned multiplayer features:
+玩家從一間簡單的新手套房開始。
 
-- Team creation
-- Co-op missions
-- Shared objectives
-- Party exploration
-- Player position synchronization
+成長路線：
 
-## 🍜 Taichung Culture
+新手套房  
+→ 標準套房  
+→ 公寓  
+→ 透天  
+→ 高級住宅  
+→ 別墅  
+→ 豪宅／莊園
 
-The project also aims to introduce Taichung through:
+可購買：
 
-- Local food
-- Morning markets
-- Dusk markets
-- Night markets
-- Fishing harbors
-- Temples
-- Old streets
-- Rural areas
-- Coastal areas
-- Historic locations
+- 家具
+- 車庫
+- 寵物設備
+- 裝潢
+- 收藏展示
+
+---
+
+## 🚗 Vehicle System
+
+不同年代具有不同：
+
+- 汽車
+- 機車
+- 速克達
+- 腳踏車
+- 貨車
+- 外送車
+- 特殊交通工具
+
+可支援：
+
+- 購買
+- 改裝
+- 維修
+- 加油
+- 車庫
+- 搶車
+- 警察追捕
+
+---
+
+## 💰 Economy & Life
+
+玩家可透過：
+
+- 外送
+- 計程車
+- 物流
+- 市場工作
+- 漁港工作
+- 農村工作
+- 商店打工
+- 任務
+- 多人合作
+- 高風險犯罪任務
+
+賺取 TC 幣。
+
+可用於：
+
+- 食物
+- 衣服
+- 車輛
+- 機車
+- 房屋
+- 家具
+- 寵物用品
+- 維修
+- 加油
+- 娛樂
+
+---
+
+## 🚨 Mission & Crime
+
+任務類型包含：
+
+- 主線
+- 支線
+- 生活任務
+- 地區任務
+- 年代任務
+- 多人任務
+- 犯罪任務
+- 隨機事件
+
+犯罪玩法包含：
+
+- 搶車
+- 搶劫
+- 黑市委託
+- 幫派任務
+- 地下競速
+- 警察追捕
+- 通緝系統
+
+---
+
+## 🔊 Audio & Voice
+
+規劃支援：
+
+- 國語
+- 台語
+- 族語
+- 英語
+
+包含：
+
+- NPC 配音
+- 城市環境音
+- 市場
+- 夜市
+- 漁港
+- 酒吧
+- KTV
+- 車輛聲
+- 年代音樂
+- 多人語音
+
+---
+
+## 💾 Save & Sync
+
+玩家重要資料將保存於伺服器資料庫。
+
+包括：
+
+- 角色
+- 金錢
+- 房屋
+- 車輛
+- 寵物
+- 任務
+- 收藏
+- 年代進度
+- 區域進度
+
+登出或換電腦後仍可繼續遊戲。
+
+---
+
+## 📚 Design Documents
+
+- [Style Bible](docs/STYLE-BIBLE.md)
+- [Account & Login System](docs/ACCOUNT-LOGIN-SYSTEM.md)
+- [World & Era System](docs/WORLD-ERA-SYSTEM.md)
+- [Economy & Life System](docs/ECONOMY-LIFE-SYSTEM.md)
+- [Mission & Crime System](docs/MISSION-CRIME-SYSTEM.md)
+- [Character Customization System](docs/CHARACTER-CUSTOMIZATION-SYSTEM.md)
+- [Pet & Companion System](docs/PET-COMPANION-SYSTEM.md)
+- [Housing & Property System](docs/HOUSING-PROPERTY-SYSTEM.md)
+- [Vehicle & Era System](docs/VEHICLE-ERA-SYSTEM.md)
+- [Audio & Voice System](docs/AUDIO-VOICE-SYSTEM.md)
+- [Save & Sync System](docs/SAVE-SYNC-SYSTEM.md)
+- [Visual Quality Standard](docs/VISUAL-QUALITY-STANDARD.md)
+- [Map & Taichung Region System](docs/MAP-TAICHUNG-SYSTEM.md)
+- [Game Flow](docs/GAME-FLOW.md)
 
 ---
 
 ## 🚧 Project Status
 
-Early concept / prototype development.
+**Concept & Game Design V0.1**
 
-More updates coming soon.
+Current stage:
+
+- Game concept
+- System design
+- World planning
+- Art direction
+- Technical planning
+
+Next stage:
+
+**Playable Prototype Development**
+
+---
+
+## 🎯 Vision
+
+《台中無界》希望讓玩家：
+
+**在不同年代的台中生活、探索、成長，也讓世界看見台中的文化、美食、城市與故事。**

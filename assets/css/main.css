@@ -442,19 +442,33 @@ h1{
 
 #startGame{
   border-radius:22px;
+  cursor:pointer;
   transition:
-    background .2s ease,
-    box-shadow .2s ease,
-    transform .2s ease;
+    background .16s ease,
+    box-shadow .16s ease,
+    transform .16s ease,
+    filter .16s ease;
 }
 
 #startGame:hover{
-  background:rgba(124,77,255,.12) !important;
+  background:rgba(124,77,255,.18) !important;
   box-shadow:
-    0 0 0 1px rgba(190,165,255,.45),
-    0 0 26px rgba(124,77,255,.55),
-    inset 0 0 28px rgba(124,77,255,.12);
-  transform:scale(1.025);
+    0 0 0 2px rgba(210,190,255,.65),
+    0 0 24px rgba(124,77,255,.75),
+    0 0 48px rgba(124,77,255,.32),
+    inset 0 0 28px rgba(180,150,255,.18);
+  transform:scale(1.035);
+  filter:brightness(1.15);
+}
+
+#startGame:active{
+  transform:scale(.975);
+  background:rgba(124,77,255,.28) !important;
+  box-shadow:
+    0 0 0 2px rgba(230,215,255,.8),
+    0 0 16px rgba(124,77,255,.65),
+    inset 0 0 34px rgba(124,77,255,.3);
+  filter:brightness(1.25);
 }
 
 @media(max-width:700px){

@@ -328,6 +328,9 @@ h1{
   <div class="controls">
     W A S D 移動　｜　Shift 加速　｜　滑鼠拖曳旋轉視角
   </div>
+  <div id="vehicleHint" class="controls" style="bottom:62px;display:none;">
+  按 E 上車
+</div>
 </div>
 
 <script type="importmap">
@@ -357,6 +360,8 @@ document.querySelectorAll('.era').forEach(btn=>{
 const landing=document.getElementById('landing');
 const loading=document.getElementById('loading');
 const hud=document.getElementById('hud');
+
+const vehicleHint=document.getElementById('vehicleHint');  
 
 document.getElementById('startGame').addEventListener('click',()=>{
   landing.style.display='none';
@@ -441,13 +446,32 @@ function initGame(){
   const scooter=createScooterPlaceholder(scene);
   scooter.position.set(3,0,1.5);
 
+  let isRiding=false;
+  let canRide=false;
+
   controls.target.copy(player.position).add(new THREE.Vector3(0,1.2,0));
 
   const keys={};
 
   addEventListener('keydown',e=>{
-    keys[e.key.toLowerCase()]=true;
-  });
+  const key=e.key.toLowerCase();
+  keys[key]=true;
+
+  if(key==='e' && canRide){
+  isRiding=!isRiding;
+
+  if(isRiding){
+    player.position.copy(scooter.position);
+    player.position.y=.9;
+    player.rotation.y=scooter.rotation.y;
+    setPlayerAnimation(player,'Idle');
+  }else{
+    player.position.copy(scooter.position);
+    player.position.x+=1.3;
+    player.position.y=0;
+  }
+}
+});
 
   addEventListener('keyup',e=>{
     keys[e.key.toLowerCase()]=false;
@@ -460,43 +484,97 @@ function initGame(){
 
     const delta=Math.min(clock.getDelta(),.033);
 
-    const direction=new THREE.Vector3();
+    const scooterDistance=player.position.distanceTo(scooter.position);
+    canRide=scooterDistance<2.2 || isRiding;
 
-    if(keys.w)direction.z-=1;
-    if(keys.s)direction.z+=1;
-    if(keys.a)direction.x-=1;
-    if(keys.d)direction.x+=1;
-
-    if(direction.lengthSq()>0){
-      direction.normalize();
-
-      const speed=keys.shift?8:4.3;
-
-      const forward=new THREE.Vector3();
-      camera.getWorldDirection(forward);
-      forward.y=0;
-      forward.normalize();
-
-      const right=new THREE.Vector3()
-        .crossVectors(forward,new THREE.Vector3(0,1,0))
-        .normalize();
-
-      const move=new THREE.Vector3();
-
-      move.addScaledVector(forward,-direction.z);
-      move.addScaledVector(right,direction.x);
-      move.normalize();
-
-      player.position.addScaledVector(move,speed*delta);
-
-      player.rotation.y=Math.atan2(move.x,move.z);
-
-      setPlayerAnimation(
-  player,
-  keys.shift ? 'Run' : 'Walk'
-);
+    if(isRiding){
+  vehicleHint.style.display='block';
+  vehicleHint.textContent='按 E 下車';
+}else if(scooterDistance<2.2){
+  vehicleHint.style.display='block';
+  vehicleHint.textContent='按 E 上車';
 }else{
+  vehicleHint.style.display='none';
+}
+    
+  const direction=new THREE.Vector3();
+
+  if(isRiding){
+
+  const rideSpeed=keys.shift?12:7;
+  const turnSpeed=2.2;
+
+  if(keys.a){
+    scooter.rotation.y+=turnSpeed*delta;
+  }
+
+  if(keys.d){
+    scooter.rotation.y-=turnSpeed*delta;
+  }
+
+  let scooterMove=0;
+
+  if(keys.w)scooterMove=1;
+  if(keys.s)scooterMove=-.65;
+
+  if(scooterMove!==0){
+    const scooterForward=new THREE.Vector3(
+      -Math.sin(scooter.rotation.y),
+      0,
+      -Math.cos(scooter.rotation.y)
+    );
+
+    scooter.position.addScaledVector(
+      scooterForward,
+      rideSpeed*scooterMove*delta
+    );
+  }
+
+  player.position.copy(scooter.position);
+  player.position.y=.9;
+  player.rotation.y=scooter.rotation.y;
+
   setPlayerAnimation(player,'Idle');
+
+}else{
+
+  if(keys.w)direction.z-=1;
+  if(keys.s)direction.z+=1;
+  if(keys.a)direction.x-=1;
+  if(keys.d)direction.x+=1;
+
+  if(direction.lengthSq()>0){
+    direction.normalize();
+
+    const speed=keys.shift?8:4.3;
+
+    const forward=new THREE.Vector3();
+    camera.getWorldDirection(forward);
+    forward.y=0;
+    forward.normalize();
+
+    const right=new THREE.Vector3()
+      .crossVectors(forward,new THREE.Vector3(0,1,0))
+      .normalize();
+
+    const move=new THREE.Vector3();
+
+    move.addScaledVector(forward,-direction.z);
+    move.addScaledVector(right,direction.x);
+    move.normalize();
+
+    player.position.addScaledVector(move,speed*delta);
+
+    player.rotation.y=Math.atan2(move.x,move.z);
+
+    setPlayerAnimation(
+      player,
+      keys.shift ? 'Run' : 'Walk'
+    );
+
+  }else{
+    setPlayerAnimation(player,'Idle');
+  }
 }
 
 const petTarget=player.position.clone();

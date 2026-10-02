@@ -1,0 +1,794 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>台中無界｜TAICHUNG: UNBOUND</title>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+html,
+body{
+  width:100%;
+  height:100%;
+  margin:0;
+  overflow:hidden;
+  background:#05070b;
+  color:#fff;
+  font-family:"Microsoft JhengHei",Arial,sans-serif;
+}
+
+button{
+  font:inherit;
+}
+
+#game{
+  position:fixed;
+  inset:0;
+}
+
+canvas{
+  display:block;
+}
+
+#landing{
+  position:fixed;
+  inset:0;
+  z-index:20;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:
+    linear-gradient(90deg,rgba(3,5,10,.92),rgba(3,5,10,.40)),
+    radial-gradient(circle at 75% 35%,rgba(133,63,255,.26),transparent 36%),
+    linear-gradient(160deg,#111827,#05070b 60%);
+}
+
+.start-card{
+  width:min(920px,calc(100% - 40px));
+  padding:42px;
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:26px;
+  background:rgba(8,12,20,.78);
+  backdrop-filter:blur(20px);
+  box-shadow:0 30px 80px rgba(0,0,0,.45);
+}
+
+.brand-small{
+  color:#c5a7ff;
+  font-size:13px;
+  letter-spacing:.35em;
+}
+
+h1{
+  margin:10px 0 4px;
+  font-size:clamp(42px,7vw,90px);
+  line-height:1;
+  letter-spacing:.02em;
+}
+
+.en{
+  margin-bottom:26px;
+  color:#aeb8ca;
+  font-size:18px;
+  letter-spacing:.25em;
+}
+
+.subtitle{
+  max-width:620px;
+  color:#d7ddea;
+  line-height:1.8;
+}
+
+.era-title{
+  margin-top:28px;
+  margin-bottom:10px;
+  color:#9aa7bc;
+  font-size:13px;
+}
+
+.eras{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.era{
+  padding:10px 13px;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:10px;
+  background:#111827;
+  color:#dbe3f0;
+  cursor:pointer;
+}
+
+.era.active{
+  border-color:#aa7cff;
+  background:#6d42c7;
+  color:#fff;
+}
+
+.start-btn{
+  margin-top:28px;
+  padding:15px 27px;
+  border:0;
+  border-radius:12px;
+  background:#fff;
+  color:#0b0e15;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.start-btn:hover{
+  transform:translateY(-1px);
+}
+
+#hud{
+  position:fixed;
+  inset:0;
+  z-index:10;
+  pointer-events:none;
+  display:none;
+}
+
+.logo{
+  position:absolute;
+  top:22px;
+  left:24px;
+}
+
+.logo strong{
+  display:block;
+  font-size:20px;
+}
+
+.logo span{
+  color:#aeb8ca;
+  font-size:11px;
+  letter-spacing:.2em;
+}
+
+.mission{
+  position:absolute;
+  top:22px;
+  right:24px;
+  width:min(310px,calc(100% - 48px));
+  padding:16px 18px;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:14px;
+  background:rgba(6,9,15,.72);
+  backdrop-filter:blur(12px);
+}
+
+.mission small{
+  color:#a888ff;
+}
+
+.mission b{
+  display:block;
+  margin:5px 0;
+}
+
+.mission p{
+  margin:0;
+  color:#bcc5d5;
+  font-size:13px;
+  line-height:1.5;
+}
+
+.controls{
+  position:absolute;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  padding:10px 16px;
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:12px;
+  background:rgba(4,7,12,.7);
+  color:#d6dce8;
+  font-size:13px;
+  white-space:nowrap;
+}
+
+.player-info{
+  position:absolute;
+  left:24px;
+  bottom:22px;
+  width:230px;
+}
+
+.hp{
+  height:7px;
+  overflow:hidden;
+  border-radius:99px;
+  background:rgba(255,255,255,.15);
+}
+
+.hp::before{
+  content:"";
+  display:block;
+  width:100%;
+  height:100%;
+  background:#fff;
+}
+
+.location{
+  margin-bottom:8px;
+  color:#d6ddeb;
+  font-size:13px;
+}
+
+#loading{
+  position:fixed;
+  inset:0;
+  z-index:30;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:#05070b;
+  color:#fff;
+  letter-spacing:.2em;
+}
+
+@media(max-width:700px){
+  .start-card{
+    padding:28px 22px;
+  }
+
+  .mission{
+    top:76px;
+    left:16px;
+    right:16px;
+    width:auto;
+  }
+
+  .logo{
+    top:16px;
+    left:16px;
+  }
+
+  .player-info{
+    left:16px;
+  }
+
+  .controls{
+    bottom:12px;
+    max-width:calc(100% - 30px);
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div id="game"></div>
+
+<div id="landing">
+  <div class="start-card">
+    <div class="brand-small">OPEN WORLD PROTOTYPE V0.1</div>
+
+    <h1>台中無界</h1>
+    <div class="en">TAICHUNG: UNBOUND</div>
+
+    <div class="subtitle">
+      不同年代，同一個台中。<br>
+      先進入第一個可操作測試世界，之後我們會逐步加入真實台中地圖、
+      人物、車輛、任務、寵物與多人系統。
+    </div>
+
+    <div class="era-title">選擇年代</div>
+
+    <div class="eras">
+      <button class="era" data-era="1950–60s｜時城">1950–60s</button>
+      <button class="era" data-era="1970s｜街代">1970s</button>
+      <button class="era" data-era="1980s｜霓虹年代">1980s</button>
+      <button class="era" data-era="1990s｜街線">1990s</button>
+      <button class="era" data-era="2000s｜無限界">2000s</button>
+      <button class="era active" data-era="現代｜狂城">現代</button>
+    </div>
+
+    <button id="startGame" class="start-btn">
+      進入台中無界 →
+    </button>
+  </div>
+</div>
+
+<div id="loading">
+  LOADING TAICHUNG...
+</div>
+
+<div id="hud">
+  <div class="logo">
+    <strong>台中無界</strong>
+    <span>TAICHUNG: UNBOUND</span>
+  </div>
+
+  <div class="mission">
+    <small>PROTOTYPE MISSION 01</small>
+    <b>第一次踏上台中</b>
+    <p>使用 W A S D 在測試街區移動，體驗第三人稱角色控制。</p>
+  </div>
+
+  <div class="player-info">
+    <div id="currentEra" class="location">現代｜狂城</div>
+    <div class="hp"></div>
+  </div>
+
+  <div class="controls">
+    W A S D 移動　｜　Shift 加速　｜　滑鼠拖曳旋轉視角
+  </div>
+</div>
+
+<script type="importmap">
+{
+  "imports":{
+    "three":"https://unpkg.com/three@0.180.0/build/three.module.js",
+    "three/addons/":"https://unpkg.com/three@0.180.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+let selectedEra='現代｜狂城';
+
+document.querySelectorAll('.era').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.era').forEach(x=>x.classList.remove('active'));
+    btn.classList.add('active');
+    selectedEra=btn.dataset.era;
+  });
+});
+
+const landing=document.getElementById('landing');
+const loading=document.getElementById('loading');
+const hud=document.getElementById('hud');
+
+document.getElementById('startGame').addEventListener('click',()=>{
+  landing.style.display='none';
+  loading.style.display='flex';
+
+  document.getElementById('currentEra').textContent=selectedEra;
+
+  setTimeout(()=>{
+    loading.style.display='none';
+    hud.style.display='block';
+    initGame();
+  },700);
+});
+
+let started=false;
+
+function initGame(){
+  if(started)return;
+  started=true;
+
+  const scene=new THREE.Scene();
+  scene.background=new THREE.Color(0x99b5cf);
+  scene.fog=new THREE.Fog(0x99b5cf,38,120);
+
+  const camera=new THREE.PerspectiveCamera(
+    60,
+    innerWidth/innerHeight,
+    .1,
+    300
+  );
+
+  camera.position.set(7,6,10);
+
+  const renderer=new THREE.WebGLRenderer({
+    antialias:true
+  });
+
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.setSize(innerWidth,innerHeight);
+  renderer.shadowMap.enabled=true;
+  renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+
+  document.getElementById('game').appendChild(renderer.domElement);
+
+  const controls=new OrbitControls(camera,renderer.domElement);
+  controls.enableDamping=true;
+  controls.enablePan=false;
+  controls.minDistance=5;
+  controls.maxDistance=12;
+  controls.maxPolarAngle=Math.PI/2.15;
+
+  const hemi=new THREE.HemisphereLight(0xddeeff,0x293629,2.3);
+  scene.add(hemi);
+
+  const sun=new THREE.DirectionalLight(0xffdfb7,4);
+  sun.position.set(-18,28,14);
+  sun.castShadow=true;
+  sun.shadow.mapSize.set(2048,2048);
+  scene.add(sun);
+
+  const ground=new THREE.Mesh(
+    new THREE.PlaneGeometry(180,180),
+    new THREE.MeshStandardMaterial({
+      color:0x425848,
+      roughness:1
+    })
+  );
+
+  ground.rotation.x=-Math.PI/2;
+  ground.receiveShadow=true;
+  scene.add(ground);
+
+  createRoad(scene);
+  createCity(scene);
+
+  const player=createPlayer();
+  scene.add(player);
+
+  player.position.set(0,0,4);
+
+  controls.target.copy(player.position).add(new THREE.Vector3(0,1.2,0));
+
+  const keys={};
+
+  addEventListener('keydown',e=>{
+    keys[e.key.toLowerCase()]=true;
+  });
+
+  addEventListener('keyup',e=>{
+    keys[e.key.toLowerCase()]=false;
+  });
+
+  const clock=new THREE.Clock();
+
+  function animate(){
+    requestAnimationFrame(animate);
+
+    const delta=Math.min(clock.getDelta(),.033);
+
+    const direction=new THREE.Vector3();
+
+    if(keys.w)direction.z-=1;
+    if(keys.s)direction.z+=1;
+    if(keys.a)direction.x-=1;
+    if(keys.d)direction.x+=1;
+
+    if(direction.lengthSq()>0){
+      direction.normalize();
+
+      const speed=keys.shift?8:4.3;
+
+      const forward=new THREE.Vector3();
+      camera.getWorldDirection(forward);
+      forward.y=0;
+      forward.normalize();
+
+      const right=new THREE.Vector3()
+        .crossVectors(forward,new THREE.Vector3(0,1,0))
+        .normalize();
+
+      const move=new THREE.Vector3();
+
+      move.addScaledVector(forward,-direction.z);
+      move.addScaledVector(right,direction.x);
+      move.normalize();
+
+      player.position.addScaledVector(move,speed*delta);
+
+      player.rotation.y=Math.atan2(move.x,move.z);
+
+      player.userData.walk+=delta*(keys.shift?12:7);
+
+      const swing=Math.sin(player.userData.walk)*.45;
+
+      player.userData.leftLeg.rotation.x=swing;
+      player.userData.rightLeg.rotation.x=-swing;
+      player.userData.leftArm.rotation.x=-swing*.65;
+      player.userData.rightArm.rotation.x=swing*.65;
+    }else{
+      player.userData.leftLeg.rotation.x*=.82;
+      player.userData.rightLeg.rotation.x*=.82;
+      player.userData.leftArm.rotation.x*=.82;
+      player.userData.rightArm.rotation.x*=.82;
+    }
+
+    const desiredTarget=player.position.clone();
+    desiredTarget.y+=1.2;
+
+    controls.target.lerp(desiredTarget,.12);
+
+    controls.update();
+    renderer.render(scene,camera);
+  }
+
+  animate();
+
+  addEventListener('resize',()=>{
+    camera.aspect=innerWidth/innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(innerWidth,innerHeight);
+  });
+}
+
+function createPlayer(){
+  const player=new THREE.Group();
+
+  const black=new THREE.MeshStandardMaterial({
+    color:0x141820,
+    roughness:.65
+  });
+
+  const skin=new THREE.MeshStandardMaterial({
+    color:0xd8aa8e,
+    roughness:.75
+  });
+
+  const white=new THREE.MeshStandardMaterial({
+    color:0xd9dce1,
+    roughness:.7
+  });
+
+  const body=new THREE.Mesh(
+    new THREE.CapsuleGeometry(.42,.95,6,12),
+    black
+  );
+
+  body.position.y=1.65;
+  body.castShadow=true;
+  player.add(body);
+
+  const shirt=new THREE.Mesh(
+    new THREE.BoxGeometry(.56,.75,.34),
+    white
+  );
+
+  shirt.position.set(0,1.68,.22);
+  shirt.castShadow=true;
+  player.add(shirt);
+
+  const head=new THREE.Mesh(
+    new THREE.SphereGeometry(.35,20,20),
+    skin
+  );
+
+  head.position.y=2.72;
+  head.castShadow=true;
+  player.add(head);
+
+  const hair=new THREE.Mesh(
+    new THREE.SphereGeometry(.37,16,16),
+    new THREE.MeshStandardMaterial({color:0x171513})
+  );
+
+  hair.scale.set(1.05,.72,1.05);
+  hair.position.set(0,2.89,-.02);
+  hair.castShadow=true;
+  player.add(hair);
+
+  const leftArm=limb(black,.14,.83);
+  leftArm.position.set(-.52,1.75,0);
+  player.add(leftArm);
+
+  const rightArm=limb(black,.14,.83);
+  rightArm.position.set(.52,1.75,0);
+  player.add(rightArm);
+
+  const leftLeg=limb(black,.18,.92);
+  leftLeg.position.set(-.22,.65,0);
+  player.add(leftLeg);
+
+  const rightLeg=limb(black,.18,.92);
+  rightLeg.position.set(.22,.65,0);
+  player.add(rightLeg);
+
+  player.userData={
+    walk:0,
+    leftArm,
+    rightArm,
+    leftLeg,
+    rightLeg
+  };
+
+  return player;
+}
+
+function limb(material,radius,length){
+  const pivot=new THREE.Group();
+
+  const mesh=new THREE.Mesh(
+    new THREE.CapsuleGeometry(radius,length,5,10),
+    material
+  );
+
+  mesh.position.y=-length/2;
+  mesh.castShadow=true;
+
+  pivot.add(mesh);
+  return pivot;
+}
+
+function createRoad(scene){
+  const roadMaterial=new THREE.MeshStandardMaterial({
+    color:0x25292e,
+    roughness:.88
+  });
+
+  const road=new THREE.Mesh(
+    new THREE.PlaneGeometry(16,180),
+    roadMaterial
+  );
+
+  road.rotation.x=-Math.PI/2;
+  road.position.y=.012;
+  road.receiveShadow=true;
+
+  scene.add(road);
+
+  for(let z=-80;z<80;z+=7){
+    const line=new THREE.Mesh(
+      new THREE.PlaneGeometry(.16,3),
+      new THREE.MeshBasicMaterial({color:0xe8dfbe})
+    );
+
+    line.rotation.x=-Math.PI/2;
+    line.position.set(0,.025,z);
+
+    scene.add(line);
+  }
+
+  const sidewalkMaterial=new THREE.MeshStandardMaterial({
+    color:0x8b8b84,
+    roughness:.95
+  });
+
+  [-9,9].forEach(x=>{
+    const sidewalk=new THREE.Mesh(
+      new THREE.BoxGeometry(2,0.22,180),
+      sidewalkMaterial
+    );
+
+    sidewalk.position.set(x,.1,0);
+    sidewalk.receiveShadow=true;
+
+    scene.add(sidewalk);
+  });
+}
+
+function createCity(scene){
+  const buildingColors=[
+    0xbda987,
+    0x937d69,
+    0xb4b6b2,
+    0x7d858b,
+    0xc3a57c,
+    0x6f7678
+  ];
+
+  for(let side of [-1,1]){
+    for(let z=-75;z<=75;z+=11){
+      const w=THREE.MathUtils.randFloat(6,9);
+      const h=THREE.MathUtils.randFloat(6,20);
+      const d=THREE.MathUtils.randFloat(6,9);
+
+      const building=new THREE.Mesh(
+        new THREE.BoxGeometry(w,h,d),
+        new THREE.MeshStandardMaterial({
+          color:buildingColors[
+            Math.floor(Math.random()*buildingColors.length)
+          ],
+          roughness:.85
+        })
+      );
+
+      building.position.set(
+        side*THREE.MathUtils.randFloat(15,20),
+        h/2,
+        z+THREE.MathUtils.randFloat(-2,2)
+      );
+
+      building.castShadow=true;
+      building.receiveShadow=true;
+
+      scene.add(building);
+
+      createWindows(scene,building,w,h,d,side);
+    }
+  }
+
+  createTaichungSign(scene,-12,3,-3,'TAICHUNG');
+  createTaichungSign(scene,13,3,-30,'台中無界');
+
+  for(let z=-65;z<65;z+=18){
+    addTree(scene,-11.3,z);
+    addTree(scene,11.3,z+7);
+  }
+}
+
+function createWindows(scene,building,w,h,d,side){
+  const rows=Math.max(2,Math.floor(h/2.4));
+
+  for(let y=1.5;y<h-1;y+=2.2){
+    const win=new THREE.Mesh(
+      new THREE.PlaneGeometry(Math.min(w*.55,3.2),.75),
+      new THREE.MeshBasicMaterial({
+        color:Math.random()>.45?0xffd08a:0x657784
+      })
+    );
+
+    win.position.set(
+      building.position.x-side*(w/2+.01),
+      y,
+      building.position.z
+    );
+
+    win.rotation.y=side>0?-Math.PI/2:Math.PI/2;
+
+    scene.add(win);
+  }
+}
+
+function createTaichungSign(scene,x,y,z,text){
+  const canvas=document.createElement('canvas');
+  canvas.width=512;
+  canvas.height=160;
+
+  const ctx=canvas.getContext('2d');
+
+  ctx.fillStyle='#11131a';
+  ctx.fillRect(0,0,512,160);
+
+  ctx.fillStyle='#ffffff';
+  ctx.font='700 62px Microsoft JhengHei, sans-serif';
+  ctx.textAlign='center';
+  ctx.textBaseline='middle';
+  ctx.fillText(text,256,80);
+
+  const texture=new THREE.CanvasTexture(canvas);
+
+  const sign=new THREE.Mesh(
+    new THREE.PlaneGeometry(5.8,1.8),
+    new THREE.MeshBasicMaterial({
+      map:texture
+    })
+  );
+
+  sign.position.set(x,y,z);
+
+  if(x<0){
+    sign.rotation.y=Math.PI/2;
+  }else{
+    sign.rotation.y=-Math.PI/2;
+  }
+
+  scene.add(sign);
+}
+
+function addTree(scene,x,z){
+  const trunk=new THREE.Mesh(
+    new THREE.CylinderGeometry(.18,.25,2.2,8),
+    new THREE.MeshStandardMaterial({color:0x5a3e27})
+  );
+
+  trunk.position.set(x,1.1,z);
+  trunk.castShadow=true;
+
+  scene.add(trunk);
+
+  const crown=new THREE.Mesh(
+    new THREE.SphereGeometry(1.25,10,10),
+    new THREE.MeshStandardMaterial({color:0x355f37})
+  );
+
+  crown.position.set(x,2.9,z);
+  crown.scale.y=1.15;
+  crown.castShadow=true;
+
+  scene.add(crown);
+}
+</script>
+
+</body>
+</html>

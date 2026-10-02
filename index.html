@@ -434,6 +434,9 @@ function initGame(){
 
   const player=createPlayer(scene);
   player.position.set(0,0,4);
+  
+  const pet=createMaineCoonPlaceholder(scene);
+  pet.position.set(-1.6,0,5.2);
 
   controls.target.copy(player.position).add(new THREE.Vector3(0,1.2,0));
 
@@ -493,6 +496,28 @@ function initGame(){
   setPlayerAnimation(player,'Idle');
 }
 
+const petTarget=player.position.clone();
+
+const behind=new THREE.Vector3(
+  Math.sin(player.rotation.y),
+  0,
+  Math.cos(player.rotation.y)
+);
+
+petTarget.addScaledVector(behind,-1.8);
+petTarget.x-=.8;
+
+const petDistance=pet.position.distanceTo(petTarget);
+
+if(petDistance>1.1){
+  pet.position.lerp(petTarget,.035);
+
+  const lookTarget=player.position.clone();
+  lookTarget.y=pet.position.y;
+
+  pet.lookAt(lookTarget);
+}
+    
     const desiredTarget=player.position.clone();
     desiredTarget.y+=1.2;
 
@@ -515,6 +540,98 @@ renderer.render(scene,camera);
   });
 }
 
+function createMaineCoonPlaceholder(scene){
+  const pet=new THREE.Group();
+
+  const fur=new THREE.MeshStandardMaterial({
+    color:0x54463d,
+    roughness:.95
+  });
+
+  const darkFur=new THREE.MeshStandardMaterial({
+    color:0x2b2522,
+    roughness:.95
+  });
+
+  const chestFur=new THREE.MeshStandardMaterial({
+    color:0xb8aa98,
+    roughness:1
+  });
+
+  const body=new THREE.Mesh(
+    new THREE.SphereGeometry(.48,20,20),
+    fur
+  );
+
+  body.scale.set(1.35,.85,.8);
+  body.position.y=.58;
+  body.castShadow=true;
+  pet.add(body);
+
+  const chest=new THREE.Mesh(
+    new THREE.SphereGeometry(.32,16,16),
+    chestFur
+  );
+
+  chest.scale.set(.75,1.15,.55);
+  chest.position.set(0,.62,.38);
+  chest.castShadow=true;
+  pet.add(chest);
+
+  const head=new THREE.Mesh(
+    new THREE.SphereGeometry(.32,20,20),
+    fur
+  );
+
+  head.position.set(0,.98,.36);
+  head.castShadow=true;
+  pet.add(head);
+
+  const earGeometry=new THREE.ConeGeometry(.13,.35,4);
+
+  const leftEar=new THREE.Mesh(earGeometry,darkFur);
+  leftEar.position.set(-.18,1.27,.35);
+  leftEar.rotation.z=.12;
+  leftEar.castShadow=true;
+  pet.add(leftEar);
+
+  const rightEar=new THREE.Mesh(earGeometry,darkFur);
+  rightEar.position.set(.18,1.27,.35);
+  rightEar.rotation.z=-.12;
+  rightEar.castShadow=true;
+  pet.add(rightEar);
+
+  const tail=new THREE.Mesh(
+    new THREE.CylinderGeometry(.11,.18,1.35,10),
+    fur
+  );
+
+  tail.position.set(0,.68,-.72);
+  tail.rotation.x=Math.PI/2.5;
+  tail.castShadow=true;
+  pet.add(tail);
+
+  const legGeometry=new THREE.CapsuleGeometry(.09,.32,4,8);
+
+  [
+    [-.25,.25,.27],
+    [.25,.25,.27],
+    [-.25,.25,-.27],
+    [.25,.25,-.27]
+  ].forEach(([x,y,z])=>{
+    const leg=new THREE.Mesh(legGeometry,darkFur);
+    leg.position.set(x,y,z);
+    leg.castShadow=true;
+    pet.add(leg);
+  });
+
+  pet.scale.set(1.1,1.1,1.1);
+
+  scene.add(pet);
+
+  return pet;
+}
+  
 function createPlayer(scene){
   const player=new THREE.Group();
 

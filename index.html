@@ -15,59 +15,73 @@
 
 <div id="landing">
   <div class="landing-atmosphere"></div>
-  <div class="start-card">
-    <div class="brand-small">OPEN WORLD PROTOTYPE V0.1</div>
 
-    <h1>台中無界</h1>
-    <div class="en">TAICHUNG: UNBOUND</div>
+  <div class="landing-stage">
 
-    <div class="subtitle">
-      不同年代，同一個台中。<br>
-      先進入第一個可操作測試世界，之後我們會逐步加入真實台中地圖、
-      人物、車輛、任務、寵物與多人系統。
-    </div>
+    <div class="landing-ui">
 
-    <div class="era-title">選擇年代</div>
+      <div class="landing-brand">
+        <div class="landing-brand-mark">
+          <div class="landing-brand-city">▱▱▱</div>
+          <div class="landing-brand-plane">✈</div>
+        </div>
 
-    <div class="eras">
-      <button class="era" data-era="1950–60s｜時城">1950–60s</button>
-      <button class="era" data-era="1970s｜街代">1970s</button>
-      <button class="era" data-era="1980s｜霓虹年代">1980s</button>
-      <button class="era" data-era="1990s｜街線">1990s</button>
-      <button class="era" data-era="2000s｜無限界">2000s</button>
-      <button class="era active" data-era="現代｜狂城">現代</button>
+        <div class="landing-brand-cn">台中無界</div>
+        <div class="landing-brand-en">TAICHUNG: UNBOUND</div>
+      </div>
+
+      <div class="landing-menu">
+
+        <button
+          id="startGame"
+          class="landing-menu-btn landing-menu-primary"
+        >
+          <span class="landing-menu-icon">▶</span>
+          <span class="landing-menu-text">開始遊戲</span>
+          <span class="landing-menu-arrow">›</span>
+        </button>
+
+        <button
+          id="gameIntroBtn"
+          class="landing-menu-btn landing-menu-secondary"
+        >
+          <span class="landing-menu-icon">◈</span>
+          <span class="landing-menu-text">遊戲介紹</span>
+          <span class="landing-menu-arrow">›</span>
+        </button>
+
+        <button
+          id="settingsBtn"
+          class="landing-menu-btn landing-menu-secondary"
+        >
+          <span class="landing-menu-icon">⚙</span>
+          <span class="landing-menu-text">設定</span>
+          <span class="landing-menu-arrow">›</span>
+        </button>
+
+        <button
+          id="creditsBtn"
+          class="landing-menu-btn landing-menu-secondary"
+        >
+          <span class="landing-menu-icon">●●●</span>
+          <span class="landing-menu-text">製作團隊</span>
+          <span class="landing-menu-arrow">›</span>
+        </button>
+
+        <button
+          id="exitBtn"
+          class="landing-menu-btn landing-menu-secondary"
+        >
+          <span class="landing-menu-icon">↪</span>
+          <span class="landing-menu-text">離開</span>
+          <span class="landing-menu-arrow">›</span>
+        </button>
+
+      </div>
+
     </div>
 
   </div>
-  <div class="landing-ui">
-
-  <div class="landing-brand">
-    <div class="landing-brand-cn">台中無界</div>
-    <div class="landing-brand-en">TAICHUNG: UNBOUND</div>
-  </div>
-
-  <button id="startGame" class="landing-menu-btn landing-menu-btn-primary">
-    <span class="landing-menu-icon">▶</span>
-    <span class="landing-menu-text">開始遊戲</span>
-    <span class="landing-menu-arrow">›</span>
-  </button>
-
-</div>
-  <button
-  id="gameIntroBtn"
-  aria-label="遊戲介紹"
-  style="
-    position:absolute;
-    z-index:5;
-    left:5.5%;
-    top:47%;
-    width:24%;
-    height:8%;
-    border:0;
-    background:transparent;
-    cursor:pointer;
-  "
-></button>
 </div>
 
 <div id="gameIntroScreen" style="

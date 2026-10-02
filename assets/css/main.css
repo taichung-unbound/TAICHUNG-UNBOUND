@@ -108,6 +108,36 @@ canvas{
   animation:particleDrift 16s linear infinite;
 }
 
+#landing .landing-atmosphere{
+  background:
+    linear-gradient(
+      115deg,
+      transparent 0%,
+      transparent 38%,
+      rgba(124,77,255,.08) 46%,
+      rgba(180,150,255,.16) 50%,
+      rgba(124,77,255,.08) 54%,
+      transparent 62%,
+      transparent 100%
+    );
+  background-size:220% 100%;
+  animation:landingLightSweep 9s ease-in-out infinite;
+}
+
+@keyframes landingLightSweep{
+  0%{
+    background-position:120% 0;
+  }
+
+  55%{
+    background-position:-120% 0;
+  }
+
+  100%{
+    background-position:-120% 0;
+  }
+}
+
 @keyframes atmosphereMove{
   from{
     transform:translate3d(-2%,-1%,0) scale(1);

@@ -50,7 +50,7 @@ canvas{
   position:absolute;
   inset:-40px;
   background:
-    url('./assets/taichung-unbound-cover.png')
+    url('./assets/taichung-unbound-home-bg.png')
     center center / cover
     no-repeat;
   filter:blur(24px) brightness(.42);
@@ -62,7 +62,7 @@ canvas{
   position:absolute;
   inset:0;
   background:
-    url('./assets/taichung-unbound-cover.png')
+    url('./assets/taichung-unbound-home-bg.png')
     center center / contain
     no-repeat;
   z-index:1;
@@ -439,9 +439,21 @@ h1{
     </div>
 
   </div>
-  <button id="startGame" class="start-btn landing-start-btn">
-      進入台中無界 →
-    </button>
+  <button
+  id="startGame"
+  aria-label="開始遊戲"
+  style="
+    position:absolute;
+    z-index:5;
+    left:5.5%;
+    top:36%;
+    width:24%;
+    height:9%;
+    border:0;
+    background:transparent;
+    cursor:pointer;
+  "
+></button>
 </div>
 
 <div id="loginScreen" style="

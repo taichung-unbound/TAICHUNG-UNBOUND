@@ -342,6 +342,7 @@ h1{
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 let selectedEra='現代｜狂城';
 
@@ -431,9 +432,7 @@ function initGame(){
   createRoad(scene);
   createCity(scene);
 
-  const player=createPlayer();
-  scene.add(player);
-
+  const player=createPlayer(scene);
   player.position.set(0,0,4);
 
   controls.target.copy(player.position).add(new THREE.Vector3(0,1.2,0));
@@ -486,28 +485,25 @@ function initGame(){
 
       player.rotation.y=Math.atan2(move.x,move.z);
 
-      player.userData.walk+=delta*(keys.shift?12:7);
-
-      const swing=Math.sin(player.userData.walk)*.45;
-
-      player.userData.leftLeg.rotation.x=swing;
-      player.userData.rightLeg.rotation.x=-swing;
-      player.userData.leftArm.rotation.x=-swing*.65;
-      player.userData.rightArm.rotation.x=swing*.65;
-    }else{
-      player.userData.leftLeg.rotation.x*=.82;
-      player.userData.rightLeg.rotation.x*=.82;
-      player.userData.leftArm.rotation.x*=.82;
-      player.userData.rightArm.rotation.x*=.82;
-    }
+      setPlayerAnimation(
+  player,
+  keys.shift ? 'Run' : 'Walk'
+);
+}else{
+  setPlayerAnimation(player,'Idle');
+}
 
     const desiredTarget=player.position.clone();
     desiredTarget.y+=1.2;
 
-    controls.target.lerp(desiredTarget,.12);
+controls.target.lerp(desiredTarget,.12);
 
-    controls.update();
-    renderer.render(scene,camera);
+if(player.userData.mixer){
+  player.userData.mixer.update(delta);
+}
+
+controls.update();
+renderer.render(scene,camera);
   }
 
   animate();
@@ -519,101 +515,71 @@ function initGame(){
   });
 }
 
-function createPlayer(){
+function createPlayer(scene){
   const player=new THREE.Group();
 
-  const black=new THREE.MeshStandardMaterial({
-    color:0x141820,
-    roughness:.65
-  });
-
-  const skin=new THREE.MeshStandardMaterial({
-    color:0xd8aa8e,
-    roughness:.75
-  });
-
-  const white=new THREE.MeshStandardMaterial({
-    color:0xd9dce1,
-    roughness:.7
-  });
-
-  const body=new THREE.Mesh(
-    new THREE.CapsuleGeometry(.42,.95,6,12),
-    black
-  );
-
-  body.position.y=1.65;
-  body.castShadow=true;
-  player.add(body);
-
-  const shirt=new THREE.Mesh(
-    new THREE.BoxGeometry(.56,.75,.34),
-    white
-  );
-
-  shirt.position.set(0,1.68,.22);
-  shirt.castShadow=true;
-  player.add(shirt);
-
-  const head=new THREE.Mesh(
-    new THREE.SphereGeometry(.35,20,20),
-    skin
-  );
-
-  head.position.y=2.72;
-  head.castShadow=true;
-  player.add(head);
-
-  const hair=new THREE.Mesh(
-    new THREE.SphereGeometry(.37,16,16),
-    new THREE.MeshStandardMaterial({color:0x171513})
-  );
-
-  hair.scale.set(1.05,.72,1.05);
-  hair.position.set(0,2.89,-.02);
-  hair.castShadow=true;
-  player.add(hair);
-
-  const leftArm=limb(black,.14,.83);
-  leftArm.position.set(-.52,1.75,0);
-  player.add(leftArm);
-
-  const rightArm=limb(black,.14,.83);
-  rightArm.position.set(.52,1.75,0);
-  player.add(rightArm);
-
-  const leftLeg=limb(black,.18,.92);
-  leftLeg.position.set(-.22,.65,0);
-  player.add(leftLeg);
-
-  const rightLeg=limb(black,.18,.92);
-  rightLeg.position.set(.22,.65,0);
-  player.add(rightLeg);
-
   player.userData={
-    walk:0,
-    leftArm,
-    rightArm,
-    leftLeg,
-    rightLeg
+    mixer:null,
+    actions:{},
+    currentAction:null
   };
+
+  scene.add(player);
+
+  const loader=new GLTFLoader();
+
+  loader.load(
+    'https://threejs.org/examples/models/gltf/Soldier.glb',
+
+    gltf=>{
+      const model=gltf.scene;
+
+      model.scale.set(1.25,1.25,1.25);
+      model.rotation.y=Math.PI;
+
+      model.traverse(obj=>{
+        if(obj.isMesh){
+          obj.castShadow=true;
+          obj.receiveShadow=true;
+        }
+      });
+
+      player.add(model);
+
+      const mixer=new THREE.AnimationMixer(model);
+      player.userData.mixer=mixer;
+
+      gltf.animations.forEach(clip=>{
+        player.userData.actions[clip.name]=mixer.clipAction(clip);
+      });
+
+      setPlayerAnimation(player,'Idle');
+    },
+
+    undefined,
+
+    error=>{
+      console.error('Character load error:',error);
+    }
+  );
 
   return player;
 }
 
-function limb(material,radius,length){
-  const pivot=new THREE.Group();
+function setPlayerAnimation(player,name){
+  const action=player.userData.actions?.[name];
 
-  const mesh=new THREE.Mesh(
-    new THREE.CapsuleGeometry(radius,length,5,10),
-    material
-  );
+  if(!action)return;
+  if(player.userData.currentAction===action)return;
 
-  mesh.position.y=-length/2;
-  mesh.castShadow=true;
+  player.userData.currentAction?.fadeOut(.18);
 
-  pivot.add(mesh);
-  return pivot;
+  action
+    .reset()
+    .fadeIn(.18)
+    .play();
+
+  player.userData.currentAction=action;
 }
 
 function createRoad(scene){

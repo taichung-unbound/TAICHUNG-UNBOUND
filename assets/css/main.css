@@ -440,76 +440,157 @@ h1{
   letter-spacing:.2em;
 }
 
+.landing-stage{
+  position:absolute;
+  inset:0;
+  z-index:5;
+  pointer-events:none;
+}
+
 .landing-ui{
   position:absolute;
-  z-index:5;
   left:5.5%;
-  top:10%;
-  width:min(360px,30vw);
+  top:5.5%;
+  width:360px;
+  max-width:30vw;
+
   display:flex;
   flex-direction:column;
-  align-items:stretch;
+
+  pointer-events:auto;
 }
 
 .landing-brand{
-  margin-bottom:34px;
+  position:relative;
+  width:100%;
+  margin-bottom:24px;
   text-align:center;
+
   text-shadow:
-    0 0 12px rgba(124,77,255,.65),
-    0 0 30px rgba(124,77,255,.35);
+    0 0 10px rgba(124,77,255,.65),
+    0 0 26px rgba(124,77,255,.32);
+}
+
+.landing-brand-mark{
+  position:relative;
+  height:42px;
+  margin-bottom:-2px;
+}
+
+.landing-brand-city{
+  position:absolute;
+  left:50%;
+  top:0;
+
+  transform:translateX(-50%);
+
+  color:#ddd3ff;
+  font-size:25px;
+  letter-spacing:.12em;
+
+  opacity:.9;
+}
+
+.landing-brand-plane{
+  position:absolute;
+  right:20%;
+  top:-4px;
+
+  color:#c3a7ff;
+  font-size:21px;
+
+  transform:rotate(-8deg);
+
+  text-shadow:
+    0 0 10px rgba(153,92,255,.95),
+    0 0 20px rgba(124,77,255,.7);
 }
 
 .landing-brand-cn{
   color:#fff;
-  font-size:clamp(38px,4.4vw,72px);
+
+  font-size:clamp(40px,4vw,62px);
   font-weight:900;
   line-height:1;
-  letter-spacing:.06em;
+
+  letter-spacing:.04em;
 }
 
 .landing-brand-en{
-  margin-top:12px;
-  color:#e3d9ff;
-  font-size:clamp(11px,1.1vw,16px);
-  letter-spacing:.25em;
+  margin-top:10px;
+
+  color:#e6deff;
+
+  font-size:clamp(11px,1vw,15px);
+  letter-spacing:.22em;
+}
+
+.landing-menu{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
 }
 
 .landing-menu-btn{
   width:100%;
-  height:80px;
+  height:68px;
 
   display:grid;
-  grid-template-columns:88px 1fr 42px;
+  grid-template-columns:74px 1fr 38px;
   align-items:center;
 
-  padding:0 16px 0 0;
+  padding:0 14px 0 0;
 
-  border:2px solid rgba(205,170,255,.95);
   border-radius:999px;
+
+  color:#fff;
+
+  overflow:hidden;
+  cursor:pointer;
+
+  transition:
+    transform .16s ease,
+    box-shadow .16s ease,
+    filter .16s ease,
+    border-color .16s ease,
+    background .16s ease;
+}
+
+.landing-menu-primary{
+  border:2px solid rgba(210,180,255,.95);
 
   background:
     linear-gradient(
       90deg,
-      rgba(128,48,255,.98) 0%,
-      rgba(105,38,220,.96) 48%,
-      rgba(91,29,190,.96) 100%
+      rgba(132,48,255,.98) 0%,
+      rgba(110,40,225,.98) 52%,
+      rgba(91,29,190,.98) 100%
     );
-
-  color:#fff;
 
   box-shadow:
     0 0 8px rgba(174,112,255,.9),
-    0 0 24px rgba(124,77,255,.65),
-    0 10px 30px rgba(0,0,0,.28),
-    inset 0 1px 0 rgba(255,255,255,.18);
+    0 0 22px rgba(124,77,255,.6),
+    0 10px 28px rgba(0,0,0,.3);
+}
 
-  overflow:hidden;
-  cursor:pointer;
+.landing-menu-secondary{
+  border:1px solid rgba(255,255,255,.34);
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(35,33,39,.94),
+      rgba(22,22,27,.92)
+    );
+
+  box-shadow:
+    0 9px 24px rgba(0,0,0,.3),
+    inset 0 1px 0 rgba(255,255,255,.05);
 }
 
 .landing-menu-icon{
-  width:88px;
-  height:76px;
+  width:74px;
+  height:64px;
 
   display:flex;
   align-items:center;
@@ -517,84 +598,145 @@ h1{
 
   border-radius:999px;
 
+  font-size:24px;
+  font-weight:700;
+}
+
+.landing-menu-primary .landing-menu-icon{
   background:
     linear-gradient(
       135deg,
-      rgba(154,66,255,.95),
-      rgba(109,52,230,.95)
+      rgba(157,70,255,.98),
+      rgba(112,50,235,.98)
     );
-
-  font-size:28px;
 
   box-shadow:
     inset -1px 0 0 rgba(255,255,255,.16);
 }
 
+.landing-menu-secondary .landing-menu-icon{
+  background:rgba(255,255,255,.035);
+
+  box-shadow:
+    inset -1px 0 0 rgba(255,255,255,.1);
+}
+
 .landing-menu-text{
   text-align:center;
-  font-size:20px;
+
+  font-size:18px;
   font-weight:800;
+
+  letter-spacing:.02em;
 }
 
 .landing-menu-arrow{
-  font-size:34px;
+  font-size:31px;
   line-height:1;
-  transition:transform .18s ease;
+
+  transition:transform .16s ease;
+}
+
+.landing-menu-btn:hover{
+  transform:translateX(4px) scale(1.018);
 }
 
 .landing-menu-btn:hover .landing-menu-arrow{
-  transform:translateX(6px);
+  transform:translateX(5px);
 }
 
-#startGame{
-  border-radius:999px;
-  cursor:pointer;
-  transition:
-    background .16s ease,
-    box-shadow .16s ease,
-    transform .16s ease,
-    filter .16s ease;
-}
-
-#startGame:hover{
+.landing-menu-primary:hover{
   background:
     linear-gradient(
       90deg,
-      rgba(142,61,255,.98) 0%,
-      rgba(118,46,235,.98) 48%,
-      rgba(103,35,205,.98) 100%
-    ) !important;
+      rgba(148,62,255,.98),
+      rgba(124,48,240,.98),
+      rgba(105,37,210,.98)
+    );
 
   box-shadow:
     0 0 10px rgba(190,140,255,.95),
     0 0 30px rgba(124,77,255,.8),
-    0 0 54px rgba(124,77,255,.35),
-    inset 0 1px 0 rgba(255,255,255,.22);
-
-  transform:scale(1.025);
-  filter:brightness(1.08);
+    0 0 48px rgba(124,77,255,.3);
 }
 
-#startGame:active{
-  transform:scale(.975);
+.landing-menu-secondary:hover{
+  border-color:rgba(196,165,255,.72);
 
   background:
     linear-gradient(
       90deg,
-      rgba(118,42,235,.98) 0%,
-      rgba(96,32,205,.98) 48%,
-      rgba(78,24,170,.98) 100%
-    ) !important;
+      rgba(48,42,61,.96),
+      rgba(31,28,39,.94)
+    );
 
   box-shadow:
-    0 0 8px rgba(180,130,255,.8),
-    0 0 18px rgba(124,77,255,.6),
-    inset 0 3px 12px rgba(0,0,0,.28);
+    0 0 18px rgba(124,77,255,.22),
+    0 12px 28px rgba(0,0,0,.36);
+}
 
-  filter:brightness(1.02);
+.landing-menu-btn:active{
+  transform:translateX(2px) scale(.975);
+}
+
+.landing-menu-primary:active{
+  background:
+    linear-gradient(
+      90deg,
+      rgba(118,42,235,.98),
+      rgba(96,32,205,.98),
+      rgba(78,24,170,.98)
+    );
+
+  box-shadow:
+    0 0 8px rgba(180,130,255,.7),
+    inset 0 3px 12px rgba(0,0,0,.28);
+}
+
+.landing-menu-secondary:active{
+  background:
+    linear-gradient(
+      90deg,
+      rgba(25,23,31,.98),
+      rgba(18,17,22,.98)
+    );
+
+  box-shadow:
+    inset 0 3px 12px rgba(0,0,0,.32);
 }
 
 @media(max-width:700px){
+
+  .landing-ui{
+    left:5%;
+    top:5%;
+    width:min(320px,88vw);
+    max-width:none;
+  }
+
+  .landing-brand{
+    margin-bottom:20px;
+  }
+
+  .landing-menu{
+    gap:9px;
+  }
+
+  .landing-menu-btn{
+    height:62px;
+    grid-template-columns:66px 1fr 34px;
+  }
+
+  .landing-menu-icon{
+    width:66px;
+    height:58px;
+    font-size:22px;
+  }
+
+  .landing-menu-text{
+    font-size:17px;
+  }
+
   .start-card{
     padding:28px 22px;
   }

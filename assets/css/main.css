@@ -547,73 +547,82 @@ h1{
 
 .landing-menu-btn{
   width:100%;
-  height:68px;
+  height:64px;
 
   display:grid;
-  grid-template-columns:74px 1fr 38px;
+  grid-template-columns:64px 1fr 38px;
   align-items:center;
 
-  padding:0 14px 0 0;
+  padding:0 16px 0 0;
 
-  border-radius:999px;
+  border-radius:16px;
 
   color:#fff;
 
   overflow:hidden;
   cursor:pointer;
 
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+
   transition:
-    transform .16s ease,
-    box-shadow .16s ease,
-    filter .16s ease,
-    border-color .16s ease,
-    background .16s ease;
+    transform .18s ease,
+    box-shadow .18s ease,
+    filter .18s ease,
+    border-color .18s ease,
+    background .18s ease;
 }
 
+
+/* 開始遊戲 */
 .landing-menu-primary{
-  border:2px solid rgba(210,180,255,.95);
+  border:1px solid rgba(170,205,255,.82);
 
   background:
     linear-gradient(
-      90deg,
-      rgba(132,48,255,.98) 0%,
-      rgba(110,40,225,.98) 52%,
-      rgba(91,29,190,.98) 100%
+      135deg,
+      rgba(86,68,255,.94) 0%,
+      rgba(108,53,225,.94) 48%,
+      rgba(28,125,220,.90) 100%
     );
 
   box-shadow:
-    0 0 8px rgba(174,112,255,.9),
-    0 0 22px rgba(124,77,255,.6),
-    0 10px 28px rgba(0,0,0,.3);
+    inset 0 1px 0 rgba(255,255,255,.18),
+    0 0 0 1px rgba(130,90,255,.18),
+    0 0 24px rgba(91,76,255,.28),
+    0 12px 30px rgba(0,0,0,.36);
 }
 
+
+/* 其他選單 */
 .landing-menu-secondary{
-  border:1px solid rgba(255,255,255,.34);
+  border:1px solid rgba(180,200,225,.28);
 
   background:
     linear-gradient(
-      90deg,
-      rgba(35,33,39,.94),
-      rgba(22,22,27,.92)
+      135deg,
+      rgba(12,19,29,.82),
+      rgba(17,22,34,.72)
     );
 
   box-shadow:
-    0 9px 24px rgba(0,0,0,.3),
-    inset 0 1px 0 rgba(255,255,255,.05);
+    inset 0 1px 0 rgba(255,255,255,.05),
+    0 10px 26px rgba(0,0,0,.30);
 }
 
+
+/* 左側圖示 */
 .landing-menu-icon{
-  width:74px;
-  height:64px;
+  width:64px;
+  height:100%;
 
   display:flex;
   align-items:center;
   justify-content:center;
 
-  border-radius:999px;
+  border-radius:15px 0 0 15px;
 
-  font-size:22px;
-  font-weight:700;
+  font-size:21px;
   line-height:1;
 }
 
@@ -627,112 +636,123 @@ h1{
   background:
     linear-gradient(
       135deg,
-      rgba(157,70,255,.98),
-      rgba(112,50,235,.98)
+      rgba(128,84,255,.72),
+      rgba(42,131,230,.50)
     );
 
   box-shadow:
-    inset -1px 0 0 rgba(255,255,255,.16);
+    inset -1px 0 0 rgba(255,255,255,.15);
 }
 
 .landing-menu-secondary .landing-menu-icon{
-  background:rgba(255,255,255,.035);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.06),
+      rgba(90,120,160,.08)
+    );
 
   box-shadow:
-    inset -1px 0 0 rgba(255,255,255,.1);
+    inset -1px 0 0 rgba(255,255,255,.08);
 }
 
+
+/* 文字 */
 .landing-menu-text{
   text-align:center;
 
-  font-size:18px;
+  font-size:17px;
   font-weight:800;
 
-  letter-spacing:.02em;
+  letter-spacing:.05em;
 }
 
+
+/* 右箭頭 */
 .landing-menu-arrow{
-  font-size:31px;
+  font-size:28px;
   line-height:1;
 
-  transition:transform .16s ease;
+  opacity:.78;
+
+  transition:
+    transform .18s ease,
+    opacity .18s ease;
 }
 
+
+/* Hover */
 .landing-menu-btn:hover{
-  transform:translateX(4px) scale(1.018);
+  transform:translateX(4px);
 }
 
 .landing-menu-btn:hover .landing-menu-arrow{
   transform:translateX(5px);
+  opacity:1;
 }
 
 .landing-menu-primary:hover{
+  border-color:rgba(205,225,255,.95);
+
   background:
     linear-gradient(
-      90deg,
-      rgba(148,62,255,.98),
-      rgba(124,48,240,.98),
-      rgba(105,37,210,.98)
+      135deg,
+      rgba(101,82,255,.98),
+      rgba(122,60,230,.98),
+      rgba(34,146,236,.94)
     );
 
   box-shadow:
-    0 0 10px rgba(190,140,255,.95),
-    0 0 30px rgba(124,77,255,.8),
-    0 0 48px rgba(124,77,255,.3);
+    inset 0 1px 0 rgba(255,255,255,.22),
+    0 0 0 1px rgba(130,90,255,.22),
+    0 0 34px rgba(77,110,255,.48),
+    0 14px 34px rgba(0,0,0,.38);
 }
 
 .landing-menu-secondary:hover{
-  border-color:rgba(196,165,255,.72);
+  border-color:rgba(130,180,235,.60);
 
   background:
     linear-gradient(
-      90deg,
-      rgba(48,42,61,.96),
-      rgba(31,28,39,.94)
+      135deg,
+      rgba(18,28,42,.90),
+      rgba(26,35,52,.84)
     );
 
   box-shadow:
-    0 0 18px rgba(124,77,255,.22),
-    0 12px 28px rgba(0,0,0,.36);
+    inset 0 1px 0 rgba(255,255,255,.08),
+    0 0 22px rgba(72,135,210,.18),
+    0 12px 28px rgba(0,0,0,.35);
 }
 
+
+/* Active */
 .landing-menu-btn:active{
-  transform:translateX(2px) scale(.975);
-}
-
-.landing-menu-btn:focus-visible{
-  outline:3px solid rgba(220,200,255,.95);
-  outline-offset:3px;
-
-  box-shadow:
-    0 0 0 4px rgba(124,77,255,.18),
-    0 0 28px rgba(124,77,255,.55);
+  transform:translateX(2px) scale(.985);
 }
 
 .landing-menu-primary:active{
-  background:
-    linear-gradient(
-      90deg,
-      rgba(118,42,235,.98),
-      rgba(96,32,205,.98),
-      rgba(78,24,170,.98)
-    );
-
-  box-shadow:
-    0 0 8px rgba(180,130,255,.7),
-    inset 0 3px 12px rgba(0,0,0,.28);
+  filter:brightness(.92);
 }
 
 .landing-menu-secondary:active{
   background:
     linear-gradient(
-      90deg,
-      rgba(25,23,31,.98),
-      rgba(18,17,22,.98)
+      135deg,
+      rgba(10,16,25,.96),
+      rgba(15,21,31,.94)
     );
+}
+
+
+/* Focus */
+.landing-menu-btn:focus-visible{
+  outline:2px solid rgba(170,215,255,.95);
+  outline-offset:4px;
 
   box-shadow:
-    inset 0 3px 12px rgba(0,0,0,.32);
+    0 0 0 4px rgba(90,120,255,.16),
+    0 0 28px rgba(60,130,220,.40);
 }
 
 @media(max-width:700px){

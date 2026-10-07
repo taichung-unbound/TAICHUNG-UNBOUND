@@ -577,6 +577,9 @@ h1{
 /* 開始遊戲 */
 .landing-menu-primary{
   border:1px solid rgba(220,205,255,.88);
+  
+  backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
 
   background:
   radial-gradient(circle at 12% 28%,rgba(255,255,255,.95) 0 1px,transparent 2px),

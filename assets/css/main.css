@@ -42,7 +42,7 @@ canvas{
   position:absolute;
   inset:-40px;
   background:
-    url('../taichung-unbound-home-bg.png')
+    url('../phantom-metropolis-home-bg.png')
     center center / cover
     no-repeat;
   filter:blur(24px) brightness(.42);
@@ -54,7 +54,7 @@ canvas{
   position:absolute;
   inset:0;
   background:
-    url('../taichung-unbound-home-bg.png')
+    url('../phantom-metropolis-home-bg.png')
     center center / cover
     no-repeat;
   z-index:1;
@@ -469,6 +469,20 @@ h1{
   text-shadow:
     0 0 10px rgba(124,77,255,.65),
     0 0 26px rgba(124,77,255,.32);
+}
+
+/* 新版幻都異世界 Logo */
+.landing-brand-logo{
+  display:block;
+  width:100%;
+  max-width:420px;
+  height:auto;
+  margin:0 auto;
+  object-fit:contain;
+
+  filter:
+    drop-shadow(0 0 10px rgba(124,77,255,.45))
+    drop-shadow(0 0 26px rgba(124,77,255,.22));
 }
 
 .landing-brand-mark{

@@ -161,8 +161,11 @@ function initGame(){
   started=true;
 
   const scene=new THREE.Scene();
-  scene.background=new THREE.Color(0xb8c5cc);
-  scene.fog=new THREE.Fog(0xb8c5cc,48,135);
+
+  // 傍晚藍調：保留近處清晰度，遠景逐漸融入暮色。
+  const duskColor=0x303b59;
+  scene.background=new THREE.Color(duskColor);
+  scene.fog=new THREE.Fog(duskColor,65,170);
 
   const camera=new THREE.PerspectiveCamera(
     60,
@@ -179,8 +182,9 @@ function initGame(){
 
   renderer.setPixelRatio(Math.min(devicePixelRatio,2));
   renderer.setSize(innerWidth,innerHeight);
+  renderer.outputColorSpace=THREE.SRGBColorSpace;
   renderer.toneMapping=THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure=1.05;
+  renderer.toneMappingExposure=1.15;
   renderer.shadowMap.enabled=true;
   renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 
@@ -193,14 +197,33 @@ function initGame(){
   controls.maxDistance=12;
   controls.maxPolarAngle=Math.PI/2.15;
 
-  const hemi=new THREE.HemisphereLight(0xddeeff,0x706052,1.6);
+  // 冷色天空與柔和地面反光，讓陰影裡仍看得到細節。
+  const hemi=new THREE.HemisphereLight(
+    0xb0c4ee,
+    0x65515b,
+    1.15
+  );
   scene.add(hemi);
 
-  const sun=new THREE.DirectionalLight(0xffe2bd,2.5);
-  sun.position.set(-18,28,14);
+  // 低角度的暖色夕照。
+  const sun=new THREE.DirectionalLight(
+    0xffc294,
+    1.35
+  );
+
+  sun.position.set(-24,16,-32);
   sun.castShadow=true;
   sun.shadow.mapSize.set(2048,2048);
-  Object.assign(sun.shadow.camera,{left:-35,right:35,top:35,bottom:-35,near:.5,far:100});
+
+  Object.assign(sun.shadow.camera,{
+    left:-35,
+    right:35,
+    top:35,
+    bottom:-35,
+    near:.5,
+    far:120
+  });
+
   sun.shadow.normalBias=.04;
   sun.shadow.bias=-.0001;
   scene.add(sun);

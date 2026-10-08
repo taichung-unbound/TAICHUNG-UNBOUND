@@ -1019,80 +1019,287 @@ function createShopSign(parent,text,y,z,color,width=7.4) {
   mesh.position.set(-.61,y,z);mesh.rotation.y=-Math.PI/2;parent.add(mesh);
 }
 function createCity(scene) {
-  const names=['暮光茶所','星禾食堂','幻都生活','青禾書屋','流光車行','雲巷咖啡','拾光花店','星河小館'];
-  const signColors=['#284b45','#754039','#304258','#5b4c39'];
-  const wallColors=[0xbeb5a4,0x969d9a,0xc3afa0,0xaaa798];
-  const concrete=streetMaterial(0xc1b8a8),frame=streetMaterial(0x484d4d,{metalness:.35});
-  const glass=streetMaterial(0x344650,{metalness:.35,roughness:.28});
-  const warm=streetMaterial(0xe7c595,{emissive:0xffcb82,emissiveIntensity:.45});
-  for(const side of [-1,1]) {
-    for(let i=0;i<16;i++) {
-      const group=new THREE.Group();group.position.set(side*12.8,0,-78+i*10.2);
-      group.rotation.y=side===1?0:Math.PI;scene.add(group);
-      // 局部座標：店面朝向 -X，兩側均朝向道路
-      const floors=3+i%3,h=3.7+floors*2.75;
-      const wall=streetMaterial(wallColors[i%4]);
-      streetBox(group,6,h-3.4,9.95,2.4,(h+3.4)/2,0,wall);
-      streetBox(group,4.8,3.4,9.8,3,1.7,0,wall);
-      streetBox(group,3.4,.26,10,-1.6,3.4,0,concrete);
-      streetBox(group,3.4,.12,10,-1.6,.23,0,concrete);
-      for(const z of [-4.6,0,4.6]) streetBox(group,.32,3.15,.32,-3,1.8,z,concrete);
-      // 店面玻璃與門框
-      for(const z of [-3.25,-1.1,1.1,3.25]) {
-        streetBox(group,.06,2.35,1.9,.54,1.55,z,glass);
-        streetBox(group,.12,2.5,.07,.48,1.55,z-.95,frame);
-        streetBox(group,.12,.08,1.95,.48,2.78,z,frame);
-        streetBox(group,.12,.08,1.95,.48,.35,z,frame);
-        streetBox(group,.04,.1,1.5,.49,1.1,z,concrete);
-      }
-      createShopSign(group,names[(i+(side===1?2:0))%names.length],3.95,0,signColors[i%4]);
-      // 斜式遮雨棚
-      const awning=streetBox(group,1.65,.12,8.5,-.4,2.95,0,streetMaterial(i%2?0x355e57:0x795647));
-      awning.rotation.z=.12;
-      for(let floor=0;floor<floors;floor++) {
-        const y=5.35+floor*2.75;
-        for(const z of [-3.05,0,3.05]) {
-          streetBox(group,.12,1.6,2.1,-.63,y,z,frame);
-          streetBox(group,.14,1.4,1.91,-.71,y,z,(floor+i)%4===0?warm:glass);
-          streetBox(group,.16,1.45,.055,-.8,y,z,frame);
-          streetBox(group,.16,.06,2,-.8,y,z,frame);
-          // 陽台平台與金屬欄杆
-          streetBox(group,.9,.13,2.4,-1.05,y-.88,z,concrete);
-          streetBox(group,.07,.06,2.4,-1.48,y-.2,z,frame);
-          for(let k=0;k<6;k++) streetBox(group,.05,.65,.05,-1.48,y-.5,z-1.1+k*.44,frame);
+  const concrete=streetMaterial(0xc1b8a8);
+
+  const frame=streetMaterial(0x343e49,{
+    metalness:.6,
+    roughness:.4
+  });
+
+  const glass=streetMaterial(0x54758c,{
+    metalness:.45,
+    roughness:.22
+  });
+
+  const warm=streetMaterial(0xf3d5a2,{
+    emissive:0xffc77a,
+    emissiveIntensity:.4
+  });
+
+  const names=[
+    '雲巷咖啡',
+    '青禾書屋',
+    '星禾食堂',
+    '幻都生活'
+  ];
+
+  // 不同寬度、高度與用途的街廓。
+  const blocks=[
+    {side:-1,z:10,width:26,height:21,depth:18,type:'mall'},
+    {side:-1,z:-21,width:22,height:35,depth:16,type:'office'},
+    {side:-1,z:-48,width:22,height:15,depth:14,type:'shops'},
+    {side:-1,z:-75,width:20,height:28,depth:16,type:'office'},
+    {side:1,z:14,width:22,height:14,depth:14,type:'shops'},
+    {side:1,z:-14,width:24,height:27,depth:16,type:'office'},
+    {side:1,z:-44,width:24,height:18,depth:14,type:'shops'},
+    {side:1,z:-74,width:22,height:39,depth:18,type:'office'}
+  ];
+
+  blocks.forEach((block,index)=>{
+    const {side,z,width,height,depth,type}=block;
+
+    const group=new THREE.Group();
+    group.position.set(side*14,0,z);
+    group.rotation.y=side===1?0:Math.PI;
+    scene.add(group);
+
+    const wall=streetMaterial(
+      type==='mall'
+        ? 0xd6c9b5
+        : type==='office'
+          ? 0x53636e
+          : 0xb9b1a5
+    );
+
+    streetBox(
+      group,depth,height,width,
+      depth/2,height/2,0,wall
+    );
+
+    // 騎樓地板與上方遮蔽。
+    streetBox(group,4,.18,width,-2,.24,0,concrete);
+    streetBox(group,4,.28,width,-2,3.8,0,concrete);
+
+    for(
+      let localZ=-width/2+1;
+      localZ<width/2;
+      localZ+=4.8
+    ){
+      streetBox(
+        group,.3,3.4,.3,
+        -3.5,2,localZ,concrete
+      );
+
+      streetBox(
+        group,.1,2.8,4,
+        -.08,1.9,localZ+1.5,glass
+      );
+
+      streetBox(
+        group,.18,.12,4,
+        -.16,3.3,localZ+1.5,frame
+      );
+
+      streetBox(
+        group,.18,2.8,.08,
+        -.17,1.9,localZ-.45,frame
+      );
+    }
+
+    const floorHeight=type==='mall'?4:3;
+
+    for(let y=6;y<height-1;y+=floorHeight){
+      for(
+        let localZ=-width/2+2;
+        localZ<width/2-1;
+        localZ+=3.2
+      ){
+        streetBox(
+          group,.12,2.1,2.6,
+          -.08,y,localZ,frame
+        );
+
+        const litWindow=(
+          Math.round(y)+index+Math.round(localZ)
+        )%5===0;
+
+        streetBox(
+          group,.15,1.9,2.35,
+          -.16,y,localZ,
+          litWindow?warm:glass
+        );
+
+        if(type==='shops'){
+          streetBox(
+            group,.8,.12,2.8,
+            -.5,y-1.1,localZ,concrete
+          );
+
+          streetBox(
+            group,.08,.7,2.8,
+            -.88,y-.7,localZ,frame
+          );
         }
-        streetBox(group,.5,.6,.8,-.9,y+1,3.9,streetMaterial(0xc4c4bc));
-        for(let k=0;k<4;k++) streetBox(group,.015,.025,.6,-1.16,y+.8+k*.12,3.9,frame);
       }
-      streetBox(group,6.2,.25,10.05,2.4,h+.1,0,concrete);
-      streetBox(group,.2,.75,10, -.6,h+.45,0,wall);
-      // 屋頂水塔
-      if(i%3===0) {
-        const tank=new THREE.Mesh(new THREE.CylinderGeometry(.7,.7,1.4,16),streetMaterial(0x9ba4a8,{metalness:.65,roughness:.35}));
-        tank.position.set(2,h+.95,2);tank.castShadow=true;group.add(tank);
+
+      streetBox(
+        group,.22,.14,width,
+        -.22,y+1.25,0,concrete
+      );
+    }
+
+    streetBox(
+      group,depth+.3,.3,width+.3,
+      depth/2,height+.15,0,frame
+    );
+
+    if(type==='mall'){
+      createShopSign(
+        group,'星環百貨',
+        5.2,0,'#64324f',14
+      );
+
+      // 百貨入口雨棚與暖色燈帶。
+      streetBox(
+        group,4.4,.14,width-2,
+        -2.1,3.95,0,glass
+      );
+
+      streetBox(
+        group,.08,.08,width-2,
+        -4.2,3.9,0,warm
+      );
+
+    }else if(type==='shops'){
+      for(
+        let localZ=-width/2+4;
+        localZ<width/2-2;
+        localZ+=7
+      ){
+        const nameIndex=(
+          index+Math.round(localZ+30)
+        )%names.length;
+
+        createShopSign(
+          group,
+          names[nameIndex],
+          4.6,
+          localZ,
+          index%2?'#315950':'#674c3a',
+          6
+        );
       }
-      // 店門外花盆與座椅
-      streetBox(group,.7,.6,.7,-1.1,.55,3.7,streetMaterial(0x6f5143));
-      for(let k=0;k<3;k++) {
-        const leaf=new THREE.Mesh(new THREE.SphereGeometry(.32,8,6),streetMaterial(0x476b4f));
-        leaf.scale.set(.7,1.8,.8);leaf.position.set(-1.1+(k-1)*.14,1,3.7);group.add(leaf);
-      }
-      if(i%3===1) {
-        streetBox(group,.6,.1,1.6,-1.8,.7,-3.4,streetMaterial(0x77583f));
-        for(const z of [-4,-2.8]) streetBox(group,.12,.5,.12,-1.8,.4,z,frame);
+
+    }else{
+      createShopSign(
+        group,
+        index%2?'幻都商務中心':'流光廣場',
+        4.6,
+        0,
+        '#293f59',
+        10
+      );
+
+      for(const localZ of [
+        -width/2+.3,
+        width/2-.3
+      ]){
+        streetBox(
+          group,.15,height-4,.16,
+          -.2,(height+4)/2,localZ,warm
+        );
       }
     }
-  }
-  for(let z=-72;z<78;z+=15) {
-    for(const side of [-1,1]) {
-      const x=side*8.9;
-      streetBox(scene,.11,5.2,.11,x,2.75,z,frame);
-      streetBox(scene,1.5,.1,.1,x-side*.7,5.3,z,frame);
-      streetBox(scene,.65,.1,.28,x-side*1.35,5.22,z,warm);
-      if(Math.abs(z)<35) {
-        const lamp=new THREE.PointLight(0xffd49d,8,8,2);lamp.position.set(x-side*1.35,4.95,z);scene.add(lamp);
+  });
+
+  // 真正的 3D 遠景高樓。
+  const skyline=[
+    [-43,-64,15,53,16],
+    [-62,-34,17,39,18],
+    [-49,7,14,46,16],
+    [43,-66,16,62,17],
+    [62,-35,18,44,16],
+    [48,10,14,34,14]
+  ];
+
+  skyline.forEach(([x,z,w,h,d],index)=>{
+    const tower=new THREE.Group();
+    tower.position.set(x,0,z);
+    scene.add(tower);
+
+    streetBox(tower,w,h,d,0,h/2,0,frame);
+
+    const facade=streetMaterial(
+      index%2?0x496b87:0x38576e,
+      {metalness:.5,roughness:.25}
+    );
+
+    for(let y=3;y<h-1;y+=3){
+      streetBox(
+        tower,w-.6,2.5,d+.12,
+        0,y,0,facade
+      );
+
+      streetBox(
+        tower,w+.12,2.5,d-.6,
+        0,y,0,facade
+      );
+
+      for(
+        let localX=-w/2+1;
+        localX<w/2;
+        localX+=2.6
+      ){
+        if((
+          Math.round(y)+Math.round(localX)+index
+        )%4===0){
+          streetBox(
+            tower,1.3,1.8,.08,
+            localX,y,-d/2-.1,warm
+          );
+        }
       }
-      addTree(scene,side*10,z+7);
+    }
+
+    streetBox(
+      tower,w+.3,.18,d+.3,
+      0,h+.1,0,warm
+    );
+  });
+
+  // 路燈仍由既有日夜循環控制。
+  for(let z=-72;z<78;z+=15){
+    for(const side of [-1,1]){
+      const x=side*8.9;
+
+      streetBox(
+        scene,.11,5.2,.11,
+        x,2.75,z,frame
+      );
+
+      streetBox(
+        scene,1.5,.1,.1,
+        x-side*.7,5.3,z,frame
+      );
+
+      streetBox(
+        scene,.65,.1,.28,
+        x-side*1.35,5.22,z,warm
+      );
+
+      if(Math.abs(z)<35){
+        const lamp=new THREE.PointLight(
+          0xffd49d,8,8,2
+        );
+
+        lamp.position.set(
+          x-side*1.35,4.95,z
+        );
+
+        scene.add(lamp);
+      }
+
+      addTree(scene,side*9.4,z+7);
     }
   }
 }

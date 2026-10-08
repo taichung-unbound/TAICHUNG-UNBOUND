@@ -1255,6 +1255,54 @@ function createCity(scene) {
     );
   });
 
+  // 第二排街屋：保持原本主街與星環百貨不變，補齊視線後方的連續街廓。
+  // 此階段仍為程序式低多邊形原型，不代表高寫實資產完成。
+  const rearWalls=[0xb4aaa0,0x9eaaa9,0xc0b19d,0x7c8b91,0xaa9f98];
+  const rearFrames=streetMaterial(0x414b52,{metalness:.25,roughness:.54});
+  const rearGlass=streetMaterial(0x526b77,{metalness:.22,roughness:.32});
+  const rearWarm=streetMaterial(0xeac69a,{emissive:0xb27635,emissiveIntensity:.22});
+  const rearRoofs=streetMaterial(0x555960);
+  const rearShops=['拾光花店','霧光麵屋','暮光茶所','雲巷商行','星野雜貨','森島書房'];
+  for(const side of [-1,1]) {
+    // 建築位於主街第一排背後；保留街道中心與玩家出生動線。
+    for(let i=0;i<9;i++) {
+      const z=-92+i*23.5+(side===1?7:0);
+      const width=19+(i%3)*1.7;
+      const height=[14,18,23,16,27,20,14,24,17][(i+(side===1?2:0))%9];
+      const depth=11+(i%3)*1.5;
+      const building=new THREE.Group();
+      building.position.set(side*33,0,z);
+      building.rotation.y=side===1?0:Math.PI;
+      scene.add(building);
+      const wall=streetMaterial(rearWalls[(i+(side===1?2:0))%rearWalls.length]);
+      streetBox(building,depth,height,width,depth/2,height/2,0,wall);
+      // 騎樓與連續店面，朝向主街方向。
+      streetBox(building,2.7,.18,width,-1.25,.2,0,concrete);
+      streetBox(building,2.7,.23,width,-1.25,3.55,0,wall);
+      for(let a=-width/2+1;a<width/2;a+=4.3) {
+        streetBox(building,.22,3.1,.22,-2.3,1.85,a,wall);
+        streetBox(building,.08,2.6,3.3,-.08,1.75,a+1.4,rearGlass);
+        streetBox(building,.12,.13,3.35,-.16,3.05,a+1.4,rearFrames);
+      }
+      for(let y=5.5;y<height-1;y+=3.15) {
+        streetBox(building,.21,.16,width,-.16,y+1.18,0,wall);
+        for(let a=-width/2+1.8;a<width/2-1;a+=3.05) {
+          const lit=(i+Math.round(y)+Math.round(a))%6===0;
+          streetBox(building,.09,1.9,2.3,-.085,y,a,lit?rearWarm:rearGlass);
+          streetBox(building,.17,2.25,.085,-.18,y,a-1.2,rearFrames);
+          streetBox(building,.17,.09,2.45,-.18,y-.96,a,rearFrames);
+        }
+      }
+      streetBox(building,depth+.35,.25,width+.4,depth/2,height+.1,0,rearRoofs);
+      if(height<=20) {
+        createShopSign(building,rearShops[(i+(side===1?3:0))%rearShops.length],4.25,0,
+          ['#36545d','#745244','#3d514c'][i%3],Math.min(7,width-3));
+      }
+      // 屋頂機房：讓樓頂輪廓不再是完全平整的長方形。
+      streetBox(building,3.5,1.4,4.5,depth/2,height+.85,-width*.18,rearFrames);
+    }
+  }
+
   // 路燈仍由既有日夜循環控制。
   for(let z=-72;z<78;z+=15){
     for(const side of [-1,1]){

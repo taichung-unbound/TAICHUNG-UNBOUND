@@ -171,7 +171,7 @@ function initGame(){
     300
   );
 
-  camera.position.set(7,6,10);
+  camera.position.set(4,3.2,10);
 
   const renderer=new THREE.WebGLRenderer({
     antialias:true

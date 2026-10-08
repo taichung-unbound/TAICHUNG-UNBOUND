@@ -728,8 +728,8 @@ function createCity(scene){
     }
   }
 
-  createTaichungSign(scene,-12,3,-3,'TAICHUNG');
-  createTaichungSign(scene,13,3,-30,'台中無界');
+  createTaichungSign(scene,-12,3,-3,'幻都商街');
+  createTaichungSign(scene,13,3,-30,'星河大道');
 
   for(let z=-65;z<65;z+=18){
     addTree(scene,-11.3,z);

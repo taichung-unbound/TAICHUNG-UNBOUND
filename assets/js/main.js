@@ -372,8 +372,157 @@ function initGame(){
   const pet=createMaineCoonPlaceholder(scene);
   pet.position.set(-1.6,0,5.2);
 
-  const scooter=createScooterPlaceholder(scene);
+    const scooter=createScooterPlaceholder(scene);
   scooter.position.set(3,0,1.5);
+
+  // 小地圖：固定北方朝上，依實際場景取得道路與建築位置。
+  const minimap=document.createElement('canvas');
+  minimap.id='minimap';
+  minimap.width=384;
+  minimap.height=384;
+  minimap.setAttribute('aria-label','幻都商街小地圖');
+
+  Object.assign(minimap.style,{
+    position:'fixed',
+    left:'20px',
+    bottom:'24px',
+    width:'clamp(140px,18vw,192px)',
+    height:'auto',
+    aspectRatio:'1',
+    borderRadius:'50%',
+    border:'2px solid rgba(167,155,255,.65)',
+    background:'rgba(12,17,29,.88)',
+    boxShadow:'0 8px 28px rgba(0,0,0,.45)',
+    pointerEvents:'none',
+    zIndex:'12'
+  });
+
+  hud.appendChild(minimap);
+
+  const mapContext=minimap.getContext('2d');
+  const mapShapes=[];
+
+  scene.updateMatrixWorld(true);
+
+  scene.traverse(object=>{
+    if(!object.isMesh)return;
+
+    const geometry=object.geometry;
+    const dimensions=geometry.parameters;
+
+    if(!dimensions)return;
+
+    let color=null;
+
+    if(
+      geometry.type==='PlaneGeometry' &&
+      dimensions.width===16 &&
+      dimensions.height===180
+    ){
+      color='#364253';
+    }else if(geometry.type==='BoxGeometry'){
+      if(dimensions.height>6 && dimensions.depth>6){
+        color='#697486';
+      }else if(
+        dimensions.height<.3 &&
+        dimensions.width>1 &&
+        dimensions.depth>100
+      ){
+        color='#475568';
+      }
+    }
+
+    if(!color)return;
+
+    const bounds=new THREE.Box3().setFromObject(object);
+
+    mapShapes.push({
+      minX:bounds.min.x,
+      maxX:bounds.max.x,
+      minZ:bounds.min.z,
+      maxZ:bounds.max.z,
+      color
+    });
+  });
+
+  // 道路先畫、建築後畫。
+  mapShapes.sort((a,b)=>{
+    return (a.color==='#697486')-(b.color==='#697486');
+  });
+
+  function updateMinimap(){
+    const c=mapContext;
+    const size=minimap.width;
+    const center=size/2;
+    const radius=center-8;
+    const scale=4;
+
+    const mapX=x=>center+(x-player.position.x)*scale;
+    const mapY=z=>center+(z-player.position.z)*scale;
+
+    c.clearRect(0,0,size,size);
+    c.save();
+
+    c.beginPath();
+    c.arc(center,center,radius,0,Math.PI*2);
+    c.clip();
+
+    c.fillStyle='rgba(12,17,29,.92)';
+    c.fillRect(0,0,size,size);
+
+    mapShapes.forEach(shape=>{
+      c.fillStyle=shape.color;
+
+      c.fillRect(
+        mapX(shape.minX),
+        mapY(shape.minZ),
+        (shape.maxX-shape.minX)*scale,
+        (shape.maxZ-shape.minZ)*scale
+      );
+    });
+
+    // 機車標記，超出附近範圍時自然裁切。
+    c.fillStyle='#c69bff';
+    c.beginPath();
+    c.arc(
+      mapX(scooter.position.x),
+      mapY(scooter.position.z),
+      7,
+      0,
+      Math.PI*2
+    );
+    c.fill();
+
+    // 玩家箭頭：步行與騎乘使用各自的前進方向。
+    const heading=isRiding
+      ? scooter.rotation.y+Math.PI
+      : player.rotation.y;
+
+    c.save();
+    c.translate(center,center);
+    c.rotate(-heading);
+    c.fillStyle='#ffffff';
+    c.strokeStyle='#9d8cff';
+    c.lineWidth=3;
+
+    c.beginPath();
+    c.moveTo(0,15);
+    c.lineTo(-10,-10);
+    c.lineTo(0,-5);
+    c.lineTo(10,-10);
+    c.closePath();
+    c.fill();
+    c.stroke();
+    c.restore();
+
+    c.fillStyle='#e5e8ff';
+    c.font='bold 22px sans-serif';
+    c.textAlign='center';
+    c.textBaseline='middle';
+    c.fillText('N',center,25);
+
+    c.restore();
+  }
 
   let isRiding=false;
   let canRide=false;
@@ -543,6 +692,7 @@ if(player.userData.mixer){
 }
 
 controls.update();
+updateMinimap();
 renderer.render(scene,camera);
   }
 

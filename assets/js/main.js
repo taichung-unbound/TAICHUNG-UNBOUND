@@ -60,7 +60,7 @@ document.querySelector('[data-intro-tab="eras"]').addEventListener('click',()=>{
     ">
       <div class="era-info-card">
         <strong>1950–60s｜CITY OF TIME｜時城</strong>
-        <p>戰後台中的舊城風貌、老街區與早期城市生活。</p>
+        <p>幻都的舊城風貌、老街區與早期城市生活。</p>
       </div>
 
       <div class="era-info-card">
@@ -85,7 +85,7 @@ document.querySelector('[data-intro-tab="eras"]').addEventListener('click',()=>{
 
       <div class="era-info-card">
         <strong>現代｜OUTLAW CITY｜狂城</strong>
-        <p>以現代台中為核心的開放世界主舞台。</p>
+        <p>具有台灣城市氛圍的虛構都會，開放世界的主舞台。</p>
       </div>
 
       <div class="era-info-card">
@@ -103,39 +103,39 @@ document.querySelector('[data-intro-tab="regions"]').addEventListener('click',()
       grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
       gap:16px;
     ">
-      <div class="era-info-card">
-        <strong>臺灣大道｜城市主軸</strong>
-        <p>串聯市中心、七期、朝馬、東海、沙鹿與海線的重要城市幹道。</p>
+            <div class="era-info-card">
+        <strong>星河大道｜城市主軸</strong>
+        <p>串聯幻都市中心、商街與住宅區的主要幹道。</p>
       </div>
 
       <div class="era-info-card">
-        <strong>七期｜現代都會核心</strong>
-        <p>高樓商辦、百貨、住宅與國家歌劇院周邊構成的現代城市景觀。</p>
+        <strong>曜光區｜現代都會核心</strong>
+        <p>高樓商辦、虛構百貨與現代住宅交織的繁華街區。</p>
       </div>
 
       <div class="era-info-card">
-        <strong>逢甲｜夜市與街頭</strong>
-        <p>密集店家、攤販、機車、人潮與夜間商圈形成高密度生活區。</p>
+        <strong>幻都商街｜夜市與街頭</strong>
+        <p>攤販、機車、小吃與霓虹招牌構成熱鬧的夜間生活。</p>
       </div>
 
       <div class="era-info-card">
-        <strong>一中｜學生商圈</strong>
-        <p>學生族群、服飾、美食與街頭小店聚集的年輕生活區。</p>
+        <strong>青禾街｜青春商圈</strong>
+        <p>服飾、美食與街頭小店聚集的年輕生活區。</p>
       </div>
 
       <div class="era-info-card">
-        <strong>台中車站｜舊城區</strong>
-        <p>老建築、騎樓、舊街區與新都市更新交錯的城市歷史核心。</p>
+        <strong>幻都驛站｜舊城區</strong>
+        <p>老建築、騎樓與新店面交錯，保留城市記憶的街區。</p>
       </div>
 
       <div class="era-info-card">
-        <strong>清水／梧棲｜海線</strong>
-        <p>港區、沿海城市、低密度街區與海線生活風貌。</p>
+        <strong>霧灣區｜海岸生活</strong>
+        <p>海風、沿岸街道與低矮住宅構成悠閒的海岸街區。</p>
       </div>
 
       <div class="era-info-card">
-        <strong>后里｜山線</strong>
-        <p>較低密度的郊區、山線交通、綠地與地方生活區域。</p>
+        <strong>嵐丘區｜山邊郊區</strong>
+        <p>坡道、綠地與郊區住宅構成城市外圍的生活風貌。</p>
       </div>
     </div>
   `;

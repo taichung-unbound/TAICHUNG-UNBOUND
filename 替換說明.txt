@@ -1,9 +1,0 @@
-BOMB WMS 作業首頁
-替換路徑（從 GitHub 根目錄）：
-preview/wms-layout-v2.html
-preview/assets/wms-layout-v2.css
-preview/assets/wms-layout-v2.js
-字型沿用 preview/assets/fonts/，本包附完整字型。TXT/ 內為完整可替換文字。
-本次：四區作業首頁、獨立異動日誌列表與入口，保留既有作業和儲存資料。流程按鈕目前導向既有共用頁面，尚非全部第7章專屬步驟。特殊物品僅有說明入口。
-未執行 Commit 或部署。
-建議 Commit：重整 WMS 作業首頁並加入獨立異動日誌入口

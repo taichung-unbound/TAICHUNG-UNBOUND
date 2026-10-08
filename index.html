@@ -1,432 +1,604 @@
 <!doctype html>
 <html lang="zh-Hant">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>幻都異世界｜PHANTOM METROPOLIS</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
 
-<link rel="stylesheet" href="./assets/css/main.css">
+  <title>幻都異世界｜PHANTOM METROPOLIS</title>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">  
+  <link rel="stylesheet" href="./assets/css/main.css">
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  >
 
+  <style>
+    #loginScreen{
+      position:fixed;
+      inset:0;
+      z-index:25;
+      align-items:center !important;
+      justify-content:center !important;
+      padding:28px 20px !important;
+      overflow:auto;
+      background:
+        linear-gradient(
+          180deg,
+          rgba(4,6,10,.08),
+          rgba(4,6,10,.20)
+        ),
+        url('./assets/phantom-metropolis-login-bg.png')
+        center center / cover no-repeat;
+    }
+
+    #loginScreen .phantom-login-wrap{
+      box-sizing:border-box;
+      width:min(550px,100%);
+      margin:auto;
+      padding:12px 0;
+      text-align:center;
+      flex-shrink:0;
+    }
+
+    #loginScreen .phantom-login-logo{
+      display:block;
+      width:min(440px,90%);
+      height:auto;
+      max-height:180px;
+      object-fit:contain;
+      margin:0 auto 18px;
+      filter:
+        drop-shadow(0 0 12px rgba(170,90,255,.5))
+        drop-shadow(0 0 25px rgba(80,160,255,.25));
+    }
+
+    #loginScreen .phantom-login-panel{
+      box-sizing:border-box;
+      position:relative;
+      padding:38px 40px 28px;
+      border:1px solid rgba(215,185,255,.85);
+      border-radius:22px;
+      background:
+        linear-gradient(
+          145deg,
+          rgba(26,18,42,.65),
+          rgba(7,12,25,.52)
+        );
+      backdrop-filter:blur(4px);
+      -webkit-backdrop-filter:blur(4px);
+      box-shadow:
+        inset 0 0 0 4px rgba(180,150,255,.08),
+        inset 0 1px 0 rgba(255,255,255,.25),
+        -5px 0 22px rgba(195,65,255,.35),
+        5px 0 22px rgba(55,190,255,.35),
+        0 20px 55px rgba(0,0,0,.32);
+    }
+
+    #loginScreen .phantom-login-panel::before,
+    #loginScreen .phantom-login-panel::after{
+      content:"✧";
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      color:#ffe8ff;
+      font-size:34px;
+      line-height:1;
+      text-shadow:
+        0 0 8px #fff,
+        0 0 18px #d85cff,
+        0 0 30px #9b5cff;
+      pointer-events:none;
+    }
+
+    #loginScreen .phantom-login-panel::before{
+      top:-18px;
+    }
+
+    #loginScreen .phantom-login-panel::after{
+      bottom:-18px;
+    }
+
+    #loginScreen .phantom-login-title{
+      margin:0 0 10px;
+      color:#fff1ff;
+      font-family:"Noto Serif TC","PMingLiU",serif;
+      font-size:clamp(26px,4vw,36px);
+      font-weight:700;
+      letter-spacing:.08em;
+      text-shadow:
+        0 0 12px rgba(215,145,255,.65),
+        0 2px 8px rgba(0,0,0,.7);
+    }
+
+    #loginScreen .phantom-login-subtitle{
+      color:#d3c5ef;
+      font-size:11px;
+      letter-spacing:.24em;
+    }
+
+    #loginScreen .phantom-login-divider{
+      height:1px;
+      margin:22px 0;
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(215,185,255,.75),
+          transparent
+        );
+    }
+
+    #loginScreen .phantom-login-description{
+      margin:0 0 22px;
+      color:#e0d9ea;
+      font-size:14px;
+      line-height:1.8;
+    }
+
+    #loginScreen .phantom-login-email{
+      position:relative;
+      display:block;
+      margin-bottom:16px;
+    }
+
+    #loginScreen .phantom-login-email i{
+      position:absolute;
+      top:50%;
+      left:18px;
+      transform:translateY(-50%);
+      color:#cbbce5;
+      pointer-events:none;
+    }
+
+    #loginScreen .phantom-login-email input{
+      box-sizing:border-box;
+      width:100%;
+      min-height:56px;
+      padding:15px 18px 15px 48px;
+      border:1px solid rgba(200,175,240,.48);
+      border-radius:10px;
+      background:rgba(12,15,32,.62);
+      color:#fff;
+      font:inherit;
+      font-size:16px;
+      outline:none;
+      transition:
+        border-color .18s ease,
+        box-shadow .18s ease;
+    }
+
+    #loginScreen .phantom-login-email input::placeholder{
+      color:#c0b7ce;
+    }
+
+    #loginScreen .phantom-login-email input:focus{
+      border-color:#d4b5ff;
+      box-shadow:0 0 18px rgba(155,95,255,.28);
+    }
+
+    #loginScreen .phantom-login-btn{
+      box-sizing:border-box;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:12px;
+      width:100%;
+      min-height:56px;
+      padding:15px 18px;
+      border-radius:10px;
+      color:#fff;
+      font:inherit;
+      font-size:16px;
+      font-weight:700;
+      letter-spacing:.06em;
+      cursor:pointer;
+      transition:
+        transform .18s ease,
+        filter .18s ease,
+        box-shadow .18s ease;
+    }
+
+    #loginScreen #emailLoginBtn{
+      border:1px solid rgba(224,194,255,.85);
+      background:
+        radial-gradient(
+          circle at 18% 30%,
+          rgba(255,255,255,.85) 0 1px,
+          transparent 2px
+        ),
+        radial-gradient(
+          circle at 76% 65%,
+          rgba(255,255,255,.7) 0 1px,
+          transparent 2px
+        ),
+        linear-gradient(
+          110deg,
+          #9253d9,
+          #7149c5 55%,
+          #416bb7
+        );
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.25),
+        0 0 22px rgba(153,80,255,.3);
+    }
+
+    #loginScreen #guestLoginBtn{
+      margin-top:14px;
+      border:1px solid rgba(190,175,230,.5);
+      background:
+        linear-gradient(
+          110deg,
+          rgba(63,43,90,.62),
+          rgba(22,39,64,.65)
+        );
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.1);
+    }
+
+    #loginScreen .phantom-login-btn:hover{
+      transform:translateY(-2px);
+      filter:brightness(1.15);
+      box-shadow:0 0 24px rgba(167,110,255,.45);
+    }
+
+    #loginScreen .phantom-login-btn:active{
+      transform:translateY(0);
+    }
+
+    #loginScreen #backToLandingBtn{
+      width:100%;
+      margin-top:22px;
+      padding:10px 8px;
+      border:0;
+      background:transparent;
+      color:#ddd2eb;
+      font:inherit;
+      font-size:13px;
+      cursor:pointer;
+      transition:color .18s ease;
+    }
+
+    #loginScreen #backToLandingBtn:hover{
+      color:#fff;
+    }
+
+    #loginScreen button:focus-visible{
+      outline:2px solid #e1c4ff;
+      outline-offset:4px;
+    }
+
+    @media(max-width:600px){
+      #loginScreen .phantom-login-panel{
+        padding:32px 22px 24px;
+      }
+
+      #loginScreen .phantom-login-logo{
+        max-height:140px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<div id="game"></div>
+  <div id="game"></div>
 
-<div id="landing">
-  <div class="landing-atmosphere"></div>
+  <div id="landing">
+    <div class="landing-atmosphere"></div>
 
-  <div class="landing-stage">
+    <div class="landing-stage">
+      <div class="landing-ui">
 
-    <div class="landing-ui">
+        <div class="landing-brand">
+          <img
+            src="./assets/phantom-metropolis-logo.png"
+            alt="幻都異世界 PHANTOM METROPOLIS"
+            class="landing-brand-logo"
+          >
+        </div>
 
-      <div class="landing-brand">
-  <img
-    src="./assets/phantom-metropolis-logo.png"
-    alt="幻都異世界 PHANTOM METROPOLIS"
-    class="landing-brand-logo"
-  >
-</div>
+        <div class="landing-menu">
 
-      <div class="landing-menu">
+          <button
+            id="startGame"
+            class="landing-menu-btn landing-menu-primary"
+            type="button"
+          >
+            <span class="landing-menu-icon">
+              <i class="fa-solid fa-play"></i>
+            </span>
+            <span class="landing-menu-text">開始遊戲</span>
+            <span class="landing-menu-arrow">›</span>
+          </button>
 
-        <button
-          id="startGame"
-          class="landing-menu-btn landing-menu-primary"
-        >
-          <span class="landing-menu-icon"><i class="fa-solid fa-play"></i></span>
-          <span class="landing-menu-text">開始遊戲</span>
-          <span class="landing-menu-arrow">›</span>
-        </button>
+          <button
+            id="gameIntroBtn"
+            class="landing-menu-btn landing-menu-secondary"
+            type="button"
+          >
+            <span class="landing-menu-icon">
+              <i class="fa-solid fa-book-open"></i>
+            </span>
+            <span class="landing-menu-text">遊戲介紹</span>
+            <span class="landing-menu-arrow">›</span>
+          </button>
 
-        <button
-          id="gameIntroBtn"
-          class="landing-menu-btn landing-menu-secondary"
-        >
-          <span class="landing-menu-icon"><i class="fa-solid fa-book-open"></i></span>
-          <span class="landing-menu-text">遊戲介紹</span>
-          <span class="landing-menu-arrow">›</span>
-        </button>
+          <button
+            id="settingsBtn"
+            class="landing-menu-btn landing-menu-secondary"
+            type="button"
+          >
+            <span class="landing-menu-icon">
+              <i class="fa-solid fa-gear"></i>
+            </span>
+            <span class="landing-menu-text">設定</span>
+            <span class="landing-menu-arrow">›</span>
+          </button>
 
-        <button
-          id="settingsBtn"
-          class="landing-menu-btn landing-menu-secondary"
-        >
-          <span class="landing-menu-icon"><i class="fa-solid fa-gear"></i></span>
-          <span class="landing-menu-text">設定</span>
-          <span class="landing-menu-arrow">›</span>
-        </button>
+          <button
+            id="creditsBtn"
+            class="landing-menu-btn landing-menu-secondary"
+            type="button"
+          >
+            <span class="landing-menu-icon">
+              <i class="fa-solid fa-users"></i>
+            </span>
+            <span class="landing-menu-text">製作團隊</span>
+            <span class="landing-menu-arrow">›</span>
+          </button>
 
-        <button
-          id="creditsBtn"
-          class="landing-menu-btn landing-menu-secondary"
-        >
-          <span class="landing-menu-icon"><i class="fa-solid fa-users"></i></span>
-          <span class="landing-menu-text">製作團隊</span>
-          <span class="landing-menu-arrow">›</span>
-        </button>
+          <button
+            id="exitBtn"
+            class="landing-menu-btn landing-menu-secondary"
+            type="button"
+          >
+            <span class="landing-menu-icon">
+              <i class="fa-solid fa-right-from-bracket"></i>
+            </span>
+            <span class="landing-menu-text">離開</span>
+            <span class="landing-menu-arrow">›</span>
+          </button>
 
-        <button
-          id="exitBtn"
-          class="landing-menu-btn landing-menu-secondary"
-        >
-          <span class="landing-menu-icon"><i class="fa-solid fa-right-from-bracket"></i></span>
-          <span class="landing-menu-text">離開</span>
-          <span class="landing-menu-arrow">›</span>
-        </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
+  <div id="gameIntroScreen" style="
+    position:fixed;
+    inset:0;
+    z-index:24;
+    display:none;
+    overflow:auto;
+    padding:48px;
+    background:
+      linear-gradient(
+        rgba(4,6,10,.82),
+        rgba(4,6,10,.94)
+      ),
+      url('./assets/taichung-unbound-cover.png')
+      center center / cover no-repeat;
+  ">
+    <button id="backFromIntroBtn" type="button" style="
+      position:fixed;
+      top:24px;
+      left:24px;
+      z-index:2;
+      padding:12px 18px;
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:12px;
+      background:rgba(8,12,20,.78);
+      color:#fff;
+      cursor:pointer;
+      backdrop-filter:blur(12px);
+    ">
+      ← 返回主選單
+    </button>
+
+    <div style="
+      width:min(1180px,calc(100% - 40px));
+      margin:70px auto 40px;
+    ">
+      <div style="
+        margin-bottom:28px;
+        text-align:center;
+      ">
+        <div style="
+          color:#b79cff;
+          font-size:12px;
+          letter-spacing:.28em;
+          margin-bottom:10px;
+        ">
+          WORLD OVERVIEW
+        </div>
+
+        <h2 style="
+          margin:0;
+          font-size:clamp(32px,4vw,54px);
+        ">
+          幻都異世界
+        </h2>
+
+        <div style="
+          margin-top:8px;
+          color:#aeb8ca;
+          letter-spacing:.18em;
+        ">
+          PHANTOM METROPOLIS
+        </div>
       </div>
 
-    </div>
+      <div style="
+        display:flex;
+        justify-content:center;
+        flex-wrap:wrap;
+        gap:10px;
+        margin-bottom:28px;
+      ">
+        <button
+          class="intro-tab"
+          data-intro-tab="eras"
+          type="button"
+        >年代</button>
 
-  </div>
-</div>
+        <button
+          class="intro-tab"
+          data-intro-tab="regions"
+          type="button"
+        >地區</button>
 
-<div id="gameIntroScreen" style="
-  position:fixed;
-  inset:0;
-  z-index:24;
-  display:none;
-  overflow:auto;
-  padding:48px;
-  background:
-    linear-gradient(
-      rgba(4,6,10,.82),
-      rgba(4,6,10,.94)
-    ),
-    url('./assets/taichung-unbound-cover.png')
-    center center / cover no-repeat;
-">
-  <button id="backFromIntroBtn" style="
-    position:fixed;
-    top:24px;
-    left:24px;
-    z-index:2;
-    padding:12px 18px;
-    border:1px solid rgba(255,255,255,.18);
-    border-radius:12px;
-    background:rgba(8,12,20,.78);
-    color:#fff;
-    cursor:pointer;
-    backdrop-filter:blur(12px);
-  ">
-    ← 返回主選單
-  </button>
-  <div style="
-  width:min(1180px,calc(100% - 40px));
-  margin:70px auto 40px;
-">
+        <button
+          class="intro-tab"
+          data-intro-tab="characters"
+          type="button"
+        >人物／寵物</button>
 
-  <div style="
-    margin-bottom:28px;
-    text-align:center;
-  ">
-    <div style="
-      color:#b79cff;
-      font-size:12px;
-      letter-spacing:.28em;
-      margin-bottom:10px;
-    ">
-      WORLD OVERVIEW
-    </div>
+        <button
+          class="intro-tab"
+          data-intro-tab="vehicles"
+          type="button"
+        >車輛</button>
 
-    <h2 style="
-      margin:0;
-      font-size:clamp(32px,4vw,54px);
-    ">
-      幻都異世界
-    </h2>
+        <button
+          class="intro-tab"
+          data-intro-tab="gameplay"
+          type="button"
+        >遊戲玩法</button>
+      </div>
 
-    <div style="
-      margin-top:8px;
-      color:#aeb8ca;
-      letter-spacing:.18em;
-    ">
-      PHANTOM METROPOLIS
+      <div id="introContent" style="
+        min-height:420px;
+        padding:32px;
+        border:1px solid rgba(177,150,255,.18);
+        border-radius:24px;
+        background:rgba(6,9,15,.72);
+        backdrop-filter:blur(18px);
+        box-shadow:0 24px 70px rgba(0,0,0,.35);
+      ">
+        <div style="
+          text-align:center;
+          color:#cbd3df;
+          padding:120px 20px;
+        ">
+          選擇上方分類，探索《幻都異世界》的世界。
+        </div>
+      </div>
     </div>
   </div>
 
-  <div style="
-    display:flex;
-    justify-content:center;
-    flex-wrap:wrap;
-    gap:10px;
-    margin-bottom:28px;
-  ">
-    <button class="intro-tab" data-intro-tab="eras">年代</button>
-    <button class="intro-tab" data-intro-tab="regions">地區</button>
-    <button class="intro-tab" data-intro-tab="characters">人物／寵物</button>
-    <button class="intro-tab" data-intro-tab="vehicles">車輛</button>
-    <button class="intro-tab" data-intro-tab="gameplay">遊戲玩法</button>
+  <div id="loginScreen" style="display:none;">
+    <section class="phantom-login-wrap">
+
+      <img
+        class="phantom-login-logo"
+        src="./assets/phantom-metropolis-logo.png"
+        alt="幻都異世界 PHANTOM METROPOLIS"
+      >
+
+      <div class="phantom-login-panel">
+        <h2 class="phantom-login-title">
+          登入幻都異世界
+        </h2>
+
+        <div class="phantom-login-subtitle">
+          PHANTOM METROPOLIS
+        </div>
+
+        <div class="phantom-login-divider"></div>
+
+        <p class="phantom-login-description">
+          登入後可保存角色、資產、寵物、車輛與遊戲進度。
+        </p>
+
+        <label class="phantom-login-email">
+          <i
+            class="fa-regular fa-envelope"
+            aria-hidden="true"
+          ></i>
+
+          <input
+            type="email"
+            autocomplete="email"
+            placeholder="輸入 Email"
+            aria-label="Email"
+          >
+        </label>
+
+        <button
+          id="emailLoginBtn"
+          class="phantom-login-btn"
+          type="button"
+        >
+          <span>Email 登入</span>
+          <span aria-hidden="true">→</span>
+        </button>
+
+        <button
+          id="guestLoginBtn"
+          class="phantom-login-btn"
+          type="button"
+        >
+          訪客模式進入
+        </button>
+
+        <button
+          id="backToLandingBtn"
+          type="button"
+        >
+          ← 返回幻都異世界首頁
+        </button>
+      </div>
+
+    </section>
   </div>
 
-  <div id="introContent" style="
-    min-height:420px;
-    padding:32px;
-    border:1px solid rgba(177,150,255,.18);
-    border-radius:24px;
-    background:rgba(6,9,15,.72);
-    backdrop-filter:blur(18px);
-    box-shadow:0 24px 70px rgba(0,0,0,.35);
-  ">
-    <div style="
-      text-align:center;
-      color:#cbd3df;
-      padding:120px 20px;
-    ">
-      選擇上方分類，探索《幻都異世界》的世界。
+  <div id="loading">
+    LOADING PHANTOM METROPOLIS...
+  </div>
+
+  <div id="hud">
+    <div class="logo">
+      <strong>幻都異世界</strong>
+      <span>PHANTOM METROPOLIS</span>
+    </div>
+
+    <div class="mission">
+      <small>主線任務 01</small>
+      <b>第一次踏入幻都</b>
+      <p>
+        探索幻都街區、接受任務、蒐集資產，開啟你的城市人生。
+      </p>
+    </div>
+
+    <div class="player-info">
+      <div id="currentEra" class="location">
+        現代｜狂城
+      </div>
+      <div class="hp"></div>
+    </div>
+
+    <div class="controls">
+      W A S D 移動　｜　Shift 加速　｜　滑鼠拖曳旋轉視角
+    </div>
+
+    <div
+      id="vehicleHint"
+      class="controls"
+      style="bottom:62px;display:none;"
+    >
+      按 E 上車
     </div>
   </div>
 
-</div>
-</div>
-  
-<div id="loginScreen" style="
-  position:fixed;
-  inset:0;
-  z-index:25;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  padding:60px;
-  overflow:hidden;
-  background:
-  linear-gradient(
-    180deg,
-    rgba(4,6,10,.18) 0%,
-    rgba(4,6,10,.28) 45%,
-    rgba(4,6,10,.42) 100%
-  ),
-  url('./assets/phantom-metropolis-login-bg.png')
-  center center / 94% auto no-repeat;
-">
-
-  <div style="
-  width:min(480px,100%);
-  padding:42px 40px;
-  animation:loginPanelIn .55s cubic-bezier(.2,.8,.2,1) both;
-
-  border:1px solid rgba(196,170,255,.42);
-  border-radius:30px;
-
-  background:
-    linear-gradient(
-      145deg,
-      rgba(22,18,44,.82),
-      rgba(8,10,24,.76)
-    );
-
-  backdrop-filter:blur(30px) saturate(1.25);
-  -webkit-backdrop-filter:blur(30px) saturate(1.25);
-
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.08),
-    0 0 0 1px rgba(147,94,255,.08),
-    0 0 34px rgba(123,74,255,.28),
-    0 28px 80px rgba(0,0,0,.55);
-">
-
-    <div style="
-      color:#b79cff;
-      font-size:12px;
-      letter-spacing:.28em;
-      margin-bottom:8px;
-    ">
-      PHANTOM METROPOLIS
-    </div>
-
-    <h2 style="
-      margin:0 0 8px;
-      font-size:30px;
-    ">
-      登入幻都異世界
-    </h2>
-
-    <p style="
-      margin:0 0 24px;
-      color:#aeb8ca;
-      line-height:1.7;
-      font-size:14px;
-    ">
-      登入後可保存角色、資產、寵物、車輛與遊戲進度。
-    </p>
-
-    <input
-  type="email"
-  placeholder="輸入 Email"
-  style="
-    width:100%;
-    padding:16px 18px;
-    margin-bottom:14px;
-
-    border:1px solid rgba(190,165,255,.34);
-    border-radius:14px;
-
-    background:rgba(10,12,28,.66);
-    color:#fff;
-
-    outline:none;
-    font-size:15px;
-
-    backdrop-filter:blur(14px);
-    -webkit-backdrop-filter:blur(14px);
-
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,.04),
-      0 0 18px rgba(124,77,255,.10);
-
-    transition:
-      border-color .18s ease,
-      box-shadow .18s ease,
-      background .18s ease;
-  "
->
-
-  <button id="emailLoginBtn" style="
-  width:100%;
-  padding:16px;
-
-  border:1px solid rgba(220,200,255,.7);
-  border-radius:14px;
-
-  background:
-    linear-gradient(
-      135deg,
-      #9b5cff 0%,
-      #7c4dff 48%,
-      #5d35c8 100%
-    );
-
-  color:#fff;
-
-  font-size:16px;
-  font-weight:800;
-  letter-spacing:.05em;
-
-  cursor:pointer;
-
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.20),
-    0 0 28px rgba(124,77,255,.42),
-    0 12px 34px rgba(0,0,0,.32);
-
-  transition:
-    transform .16s ease,
-    filter .16s ease,
-    box-shadow .16s ease;
-">
-  Email 登入 →
-</button>
-
-<button id="guestLoginBtn" style="
-  width:100%;
-  padding:15px;
-  margin-top:12px;
-
-  border:1px solid rgba(190,165,255,.28);
-  border-radius:14px;
-
-  background:
-    linear-gradient(
-      135deg,
-      rgba(255,255,255,.08),
-      rgba(130,95,210,.10)
-    );
-
-  color:#e2e6f2;
-
-  font-size:15px;
-  font-weight:700;
-  letter-spacing:.04em;
-
-  cursor:pointer;
-
-  backdrop-filter:blur(14px);
-  -webkit-backdrop-filter:blur(14px);
-
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.05),
-    0 8px 24px rgba(0,0,0,.22);
-
-  transition:
-    transform .16s ease,
-    border-color .16s ease,
-    background .16s ease,
-    box-shadow .16s ease;
-">
-  訪客模式進入
-</button>
-
-  <button id="backToLandingBtn" style="
-  width:100%;
-  margin-top:18px;
-  padding:11px 12px;
-
-  border:0;
-  background:transparent;
-
-  color:#aeb7c8;
-
-  font-size:13px;
-  font-weight:600;
-  letter-spacing:.04em;
-
-  cursor:pointer;
-
-  opacity:.92;
-
-  transition:
-    color .16s ease,
-    opacity .16s ease,
-    transform .16s ease;
-">
-  ← 返回幻都異世界首頁
-</button>
-
-  </div>
-</div>
-  
-<div id="loading">
-  LOADING PHANTOM METROPOLIS...
-</div>
-
-<div id="hud">
-  <div class="logo">
-    <strong>幻都異世界</strong>
-    <span>PHANTOM METROPOLIS</span>
-  </div>
-
-  <div class="mission">
-  <small>主線任務 01</small>
-  <b>第一次踏入幻都</b>
-  <p>探索幻都街區、接受任務、蒐集資產，開啟你的城市人生。</p>
-</div>
-
-  <div class="player-info">
-    <div id="currentEra" class="location">現代｜狂城</div>
-    <div class="hp"></div>
-  </div>
-
-  <div class="controls">
-    W A S D 移動　｜　Shift 加速　｜　滑鼠拖曳旋轉視角
-  </div>
-  <div id="vehicleHint" class="controls" style="bottom:62px;display:none;">
-  按 E 上車
-</div>
-</div>
-
-<script type="importmap">
-{
-  "imports":{
-    "three":"https://unpkg.com/three@0.180.0/build/three.module.js",
-    "three/addons/":"https://unpkg.com/three@0.180.0/examples/jsm/"
+  <script type="importmap">
+  {
+    "imports":{
+      "three":"https://unpkg.com/three@0.180.0/build/three.module.js",
+      "three/addons/":"https://unpkg.com/three@0.180.0/examples/jsm/"
+    }
   }
-}
-</script>
+  </script>
 
-<script type="module" src="./assets/js/main.js"></script>
+  <script type="module" src="./assets/js/main.js"></script>
 
 </body>
 </html>

@@ -197,7 +197,6 @@ function initGame(){
   controls.maxDistance=12;
   controls.maxPolarAngle=Math.PI/2.15;
 
-  // 冷色天空與柔和地面反光，讓陰影裡仍看得到細節。
   const hemi=new THREE.HemisphereLight(
     0xb0c4ee,
     0x65515b,
@@ -205,12 +204,7 @@ function initGame(){
   );
   scene.add(hemi);
 
-  // 低角度的暖色夕照。
-  const sun=new THREE.DirectionalLight(
-    0xffc294,
-    1.35
-  );
-
+  const sun=new THREE.DirectionalLight(0xffffff,1.35);
   sun.position.set(-24,16,-32);
   sun.castShadow=true;
   sun.shadow.mapSize.set(2048,2048);
@@ -227,6 +221,135 @@ function initGame(){
   sun.shadow.normalBias=.04;
   sun.shadow.bias=-.0001;
   scene.add(sun);
+
+  // 現實 3600 秒＝遊戲 24 小時。
+  let gameHour=9;
+  const dayLengthSeconds=3600;
+
+  // 時段之間連續漸變，不突然切換。
+  const timePalette=[
+    {hour:0,  sky:0x10182c, light:0x91a9dc, sun:.05, ambient:.40},
+    {hour:5,  sky:0x19243b, light:0x91a9dc, sun:.05, ambient:.40},
+    {hour:6,  sky:0x777e9b, light:0xffbf99, sun:.45, ambient:.75},
+    {hour:8,  sky:0xa8c6df, light:0xffe2bd, sun:1.60, ambient:1.20},
+    {hour:12, sky:0xb5d4eb, light:0xfff5e5, sun:2.30, ambient:1.35},
+    {hour:15, sky:0xa8c5dd, light:0xffdfb4, sun:1.90, ambient:1.20},
+    {hour:17, sky:0x8c8fa9, light:0xffb889, sun:1.00, ambient:.95},
+    {hour:18, sky:0x485674, light:0xffa078, sun:.25, ambient:.65},
+    {hour:19, sky:0x202c49, light:0x91a9dc, sun:.05, ambient:.45},
+    {hour:24, sky:0x10182c, light:0x91a9dc, sun:.05, ambient:.40}
+  ];
+
+  const skyColor=new THREE.Color();
+  const lightColor=new THREE.Color();
+  const nextColor=new THREE.Color();
+
+  let cityLights=null;
+  let glowingMaterials=null;
+
+  function updateDayNight(delta){
+    gameHour=(gameHour+delta*24/dayLengthSeconds)%24;
+
+    let index=0;
+
+    while(
+      index<timePalette.length-2 &&
+      gameHour>=timePalette[index+1].hour
+    ){
+      index++;
+    }
+
+    const from=timePalette[index];
+    const to=timePalette[index+1];
+    const progress=(gameHour-from.hour)/(to.hour-from.hour);
+    const blend=THREE.MathUtils.smoothstep(progress,0,1);
+
+    skyColor
+      .setHex(from.sky)
+      .lerp(nextColor.setHex(to.sky),blend);
+
+    lightColor
+      .setHex(from.light)
+      .lerp(nextColor.setHex(to.light),blend);
+
+    scene.background.copy(skyColor);
+    scene.fog.color.copy(skyColor);
+
+    hemi.color.copy(skyColor).lerp(
+      nextColor.setHex(0xddeaff),
+      .45
+    );
+
+    hemi.intensity=THREE.MathUtils.lerp(
+      from.ambient,
+      to.ambient,
+      blend
+    );
+
+    sun.color.copy(lightColor);
+    sun.intensity=THREE.MathUtils.lerp(
+      from.sun,
+      to.sun,
+      blend
+    );
+
+    // 上午從一側升起，中午升高，下午往另一側落下。
+    const solarAngle=(gameHour-6)/12*Math.PI;
+
+    sun.position.set(
+      -Math.cos(solarAngle)*40,
+      Math.max(4,Math.sin(solarAngle)*45),
+      -18
+    );
+
+    // 傍晚開燈，清晨逐漸關燈。
+    const morning=THREE.MathUtils.smoothstep(gameHour,5.5,7.5);
+    const evening=THREE.MathUtils.smoothstep(gameHour,17,19);
+    const nightAmount=1-morning+evening;
+
+    // 城市建立完成後，只收集一次燈具與發光材質。
+    if(cityLights===null){
+      cityLights=[];
+      glowingMaterials=new Map();
+
+      scene.traverse(object=>{
+        if(object.isPointLight){
+          cityLights.push({
+            light:object,
+            intensity:object.intensity
+          });
+        }
+
+        if(!object.isMesh)return;
+
+        const materials=Array.isArray(object.material)
+          ? object.material
+          : [object.material];
+
+        materials.forEach(material=>{
+          if(
+            material.emissive &&
+            material.emissiveIntensity>0 &&
+            material.emissive.getHex()!==0
+          ){
+            glowingMaterials.set(
+              material,
+              material.emissiveIntensity
+            );
+          }
+        });
+      });
+    }
+
+    cityLights.forEach(({light,intensity})=>{
+      light.intensity=intensity*nightAmount;
+    });
+
+    glowingMaterials.forEach((intensity,material)=>{
+      material.emissiveIntensity=intensity*
+        THREE.MathUtils.lerp(.35,2,nightAmount);
+    });
+  }
 
   const ground=new THREE.Mesh(
     new THREE.PlaneGeometry(180,180),
@@ -290,7 +413,10 @@ function initGame(){
 
     const delta=Math.min(clock.getDelta(),.033);
 
+    updateDayNight(delta);
+
     const scooterDistance=player.position.distanceTo(scooter.position);
+    
     canRide=scooterDistance<2.2 || isRiding;
 
     if(isRiding){

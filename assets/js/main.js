@@ -1063,6 +1063,11 @@ function createCity(scene) {
     group.rotation.y=side===1?0:Math.PI;
     scene.add(group);
 
+    if(type==='mall'){
+      createStarRingMall(group);
+      return;
+    }
+
     const wall=streetMaterial(
       type==='mall'
         ? 0xd6c9b5
@@ -1153,24 +1158,7 @@ function createCity(scene) {
       depth/2,height+.15,0,frame
     );
 
-    if(type==='mall'){
-      createShopSign(
-        group,'星環百貨',
-        5.2,0,'#64324f',14
-      );
-
-      // 百貨入口雨棚與暖色燈帶。
-      streetBox(
-        group,4.4,.14,width-2,
-        -2.1,3.95,0,glass
-      );
-
-      streetBox(
-        group,.08,.08,width-2,
-        -4.2,3.9,0,warm
-      );
-
-    }else if(type==='shops'){
+    if(type==='shops'){
       for(
         let localZ=-width/2+4;
         localZ<width/2-2;
@@ -1313,4 +1301,179 @@ function addTree(scene,x,z) {
     crown.scale.set(1,.8,1);crown.castShadow=true;scene.add(crown);
   }
   streetBox(scene,1.8,.23,1.8,x,.23,z,streetMaterial(0x7d7d70));
+}
+
+// 星環百貨：原創可繞行建築，材質在本機產生，不依賴外部貼圖。
+function createStarRingMall(parent) {
+  const makeSurface=(kind)=>{
+    const canvas=document.createElement('canvas');
+    canvas.width=canvas.height=512;
+    const ctx=canvas.getContext('2d');
+    let seed=42619;
+    const random=()=>{seed=seed*16807%2147483647;return seed/2147483647;};
+    ctx.fillStyle=kind==='stone'?'#d1ccc1':'#a8a39a';
+    ctx.fillRect(0,0,512,512);
+    for(let i=0;i<18000;i++){
+      const v=kind==='stone'?170+random()*60:115+random()*65;
+      ctx.fillStyle=`rgba(${v},${v},${v},.22)`;
+      ctx.fillRect(random()*512,random()*512,1+random()*2,1+random()*2);
+    }
+    ctx.strokeStyle=kind==='stone'?'#aaa79f':'#79766f';
+    ctx.lineWidth=2;
+    for(let y=0;y<=512;y+=128){
+      ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(512,y);ctx.stroke();
+      for(let x=(y/128%2)*128;x<=512;x+=256){
+        ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,y+128);ctx.stroke();
+      }
+    }
+    const map=new THREE.CanvasTexture(canvas);
+    map.colorSpace=THREE.SRGBColorSpace;
+    map.wrapS=map.wrapT=THREE.RepeatWrapping;
+    map.repeat.set(2,3);
+    const bump=map.clone();
+    bump.colorSpace=THREE.NoColorSpace;bump.needsUpdate=true;
+    return new THREE.MeshStandardMaterial({
+      color:0xffffff,map,bumpMap:bump,bumpScale:.025,roughness:.78
+    });
+  };
+  const stone=makeSurface('stone');
+  const paving=makeSurface('paving');
+  const metal=streetMaterial(0x505963,{metalness:.75,roughness:.28});
+  const dark=streetMaterial(0x252b31,{roughness:.9});
+  const glass=streetMaterial(0x658b9d,{metalness:.35,roughness:.19});
+  const clear=streetMaterial(0xa5d1da,{
+    transparent:true,opacity:.18,depthWrite:false,roughness:.14,metalness:.1
+  });
+  const wood=streetMaterial(0x765344,{roughness:.7});
+  const warm=streetMaterial(0xffe1ae,{emissive:0xffcf87,emissiveIntensity:.55});
+  const red=streetMaterial(0x6e253c,{roughness:.48});
+  const fabric=streetMaterial(0xd5c7b5);
+  const box=(w,h,d,x,y,z,mat)=>streetBox(parent,w,h,d,x,y,z,mat);
+
+  // 後側量體與退縮的上層玻璃立面；正面不再使用整面實牆。
+  box(15,21,26,10.5,10.5,0,stone);
+  box(3,17,26,1.5,12.5,0,dark);
+  for(const z of [-12,12]) box(3.5,21,2,1.2,10.5,z,stone);
+  for(let level=0;level<4;level++){
+    const y=6.2+level*3.6;
+    for(let bay=0;bay<10;bay++){
+      const z=-10.8+bay*2.4;
+      const panel=glass.clone();
+      panel.color.setHex((bay+level)%3===0?0x789ba8:0x527d91);
+      box(.08,3.24,2.3,-.14,y,z,panel);
+      box(.18,3.5,.07,-.24,y,z-1.17,metal);
+      // 玻璃後方的遮陽簾與樓板形成深度。
+      if((bay+level)%4===0) box(.06,2.2,1.7,.12,y+.2,z,fabric);
+    }
+    box(.42,.22,23.2,-.23,y-1.72,0,metal);
+  }
+  box(.28,.3,24,-.3,20,0,metal);
+  box(18.4,.3,26.4,9,21.15,0,stone);
+  box(.2,.65,26,-.1,21.5,0,metal);
+
+  // 不對稱石材側翼與通風格柵。
+  box(1.1,16,4.2,-.5,12.5,9.8,stone);
+  for(let y=6;y<19;y+=.32) box(.08,.09,2.5,-1.08,y,9.8,metal);
+  box(18,.3,26,9,4.05,0,stone);
+
+  // 連續騎樓：鋪面、柱腳、梁與天花燈。
+  box(4.2,.16,26,-2,.24,0,paving);
+  box(4.5,.24,26.3,-2,3.78,0,stone);
+  for(const z of [-12,-8,-4,4,8,12]){
+    box(.42,3.4,.42,-3.6,1.99,z,stone);
+    box(.56,.15,.56,-3.6,.39,z,metal);
+    box(.5,.16,.5,-3.6,3.64,z,metal);
+  }
+  for(let z=-10;z<=10;z+=4){
+    box(.7,.025,.7,-2.2,3.64,z,warm);
+  }
+  box(.08,.07,25.5,-4.2,3.64,0,warm);
+
+  // 中央入口退縮；兩側展示櫥窗保留可見的店內陳列。
+  box(.1,3.1,25,1.2,1.85,0,dark);
+  for(const side of [-1,1]){
+    const center=side*7.4;
+    box(1,.16,7.8,.55,.43,center,wood);
+    box(.08,2.9,7.8,-.13,1.95,center,clear);
+    for(let z=center-3.9;z<=center+3.9+.01;z+=1.95){
+      box(.14,3.05,.055,-.23,1.95,z,metal);
+    }
+    for(const y of [.43,3.47]) box(.14,.09,7.8,-.23,y,center,metal);
+    for(let z=center-2.8;z<=center+2.8;z+=2.8){
+      box(.75,.22,.85,.35,.62,z,stone);
+      const torso=new THREE.Mesh(new THREE.CapsuleGeometry(.16,.45,4,10),fabric);
+      torso.position.set(.35,1.52,z);parent.add(torso);
+      const head=new THREE.Mesh(new THREE.SphereGeometry(.12,12,8),fabric);
+      head.position.set(.35,2,z);parent.add(head);
+      for(const offset of [-.1,.1]) box(.1,.55,.1,.35,1,z+offset,fabric);
+    }
+    box(.25,.05,7.6,.15,3.32,center,warm);
+  }
+  for(const z of [-1.1,1.1]){
+    box(.08,2.9,2.1,-.2,1.95,z,clear);
+    box(.12,2.95,.06,-.28,1.95,z-1.04,metal);
+    box(.06,.55,.05,-.35,1.8,z-.7,metal);
+  }
+  box(.14,.1,4.4,-.28,3.45,0,metal);
+  box(1.4,.04,4.4,-.3,.34,0,dark);
+  box(.05,.015,4.4,-1.02,.37,0,warm);
+
+  // 獨立玻璃入口雨棚與金屬斜撐。
+  box(4.7,.08,7,-2.15,4.25,0,clear);
+  for(const z of [-3.4,0,3.4]){
+    box(4.7,.09,.08,-2.15,4.22,z,metal);
+    const brace=box(2.8,.08,.08,-1.45,4.65,z,metal);
+    brace.rotation.z=-.28;
+  }
+
+  // 原創星環標誌與中文直式招牌，四字不沿用真實品牌圖樣。
+  const signCanvas=document.createElement('canvas');
+  signCanvas.width=256;signCanvas.height=1024;
+  const ctx=signCanvas.getContext('2d');
+  ctx.fillStyle='#702b42';ctx.fillRect(0,0,256,1024);
+  ctx.strokeStyle='#ddc49c';ctx.lineWidth=4;ctx.strokeRect(10,10,236,1004);
+  ctx.save();ctx.translate(128,118);ctx.rotate(-.4);
+  ctx.strokeStyle='#ffe5b9';ctx.lineWidth=7;
+  ctx.beginPath();ctx.ellipse(0,0,75,31,0,0,Math.PI*2);ctx.stroke();
+  ctx.restore();
+  ctx.fillStyle='#ffe5b9';ctx.beginPath();
+  for(let i=0;i<10;i++){
+    const a=-Math.PI/2+i*Math.PI/5,r=i%2?17:38;
+    const x=128+Math.cos(a)*r,y=118+Math.sin(a)*r;
+    if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+  }
+  ctx.closePath();ctx.fill();
+  ctx.font='bold 135px "Microsoft JhengHei",sans-serif';
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  [...'星環百貨'].forEach((letter,i)=>ctx.fillText(letter,128,310+i*175));
+  const signMap=new THREE.CanvasTexture(signCanvas);
+  signMap.colorSpace=THREE.SRGBColorSpace;
+  const signMat=new THREE.MeshStandardMaterial({
+    map:signMap,emissiveMap:signMap,emissive:0xffffff,emissiveIntensity:.3,roughness:.5
+  });
+  box(.25,11,2.8,-.98,11,-9.3,red);
+  const sign=new THREE.Mesh(new THREE.PlaneGeometry(2.65,10.6),signMat);
+  sign.rotation.y=-Math.PI/2;sign.position.set(-1.12,11,-9.3);parent.add(sign);
+  createShopSign(parent,'星環百貨',4.9,0,'#26383f',7);
+
+  // 花台、長椅及入口導覽牌，不增加尚未實作的店內互動。
+  const soil=streetMaterial(0x332b22);
+  const green=streetMaterial(0x48614b);
+  for(const z of [-10.2,10.2]){
+    box(.9,.65,2.1,-3,.66,z,stone);
+    box(.75,.03,1.95,-3,1,z,soil);
+    for(let i=0;i<7;i++){
+      const leaf=new THREE.Mesh(new THREE.SphereGeometry(.22,10,8),green);
+      leaf.scale.set(.8,1.5,1);leaf.position.set(-3+(i%2)*.15,1.17,z-.78+i*.26);
+      leaf.castShadow=true;parent.add(leaf);
+    }
+  }
+  box(.5,.1,2,-2.8,.85,6.7,wood);
+  for(const z of [5.9,7.5])box(.4,.45,.08,-2.8,.57,z,metal);
+  box(.18,1.3,.9,-2.9,1.03,-3,metal);
+  // 夜間入口照明交由既有日夜循環接管。
+  for(const z of [-6,6]){
+    const lamp=new THREE.PointLight(0xffdfb0,12,7,2);
+    lamp.position.set(-1.8,3.3,z);parent.add(lamp);
+  }
 }

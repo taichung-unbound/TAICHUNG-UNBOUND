@@ -369,6 +369,8 @@ function initGame(){
   const player=createPlayer(scene);
   player.position.set(0,0,4);
   
+  const errand=createErrandPrototype(scene,player,hud);
+
   const pet=createMaineCoonPlaceholder(scene);
   pet.position.set(-1.6,0,5.2);
 
@@ -533,7 +535,9 @@ function initGame(){
 
   addEventListener('keydown',e=>{
   const key=e.key.toLowerCase();
+  if(e.target.closest('button,input,textarea'))return;
   keys[key]=true;
+  if(key==='f' && !e.repeat && !isRiding)errand.interact();
 
   if(key==='e' && canRide){
   isRiding=!isRiding;
@@ -693,6 +697,7 @@ if(player.userData.mixer){
 
 controls.update();
 updateMinimap();
+errand.update(isRiding);
 renderer.render(scene,camera);
   }
 
@@ -1524,4 +1529,53 @@ function createStarRingMall(parent) {
     const lamp=new THREE.PointLight(0xffdfb0,12,7,2);
     lamp.position.set(-1.8,3.3,z);parent.add(lamp);
   }
+}
+
+
+// Local interaction prototype: no account binding or cloud persistence.
+function createErrandPrototype(scene,player,hud){
+  let stage=0, balance=0, dialogOpen=false;
+  const reward=300; // Temporary playtest value, not an approved economy price.
+  const points=[
+    {name:'街坊委託人',x:9.4,z:4,color:0xa18bff},
+    {name:'街角取貨處',x:9.4,z:14,color:0xf2c46d},
+    {name:'街坊收件人',x:9.4,z:30,color:0x77cfb3}
+  ];
+  const panel=document.querySelector('.mission');
+  panel.innerHTML='<small>新手收入任務 · 本機測試</small><b>街坊跑腿</b><p id="errandGoal"></p><div id="errandWallet"></div><small>尚未連接雲端存檔；重新整理會重置。</small>';
+  const goal=panel.querySelector('#errandGoal'),wallet=panel.querySelector('#errandWallet');
+  const hint=document.createElement('div');hint.className='errand-hint';hint.setAttribute('aria-live','polite');hud.append(hint);
+  const dialog=document.createElement('section');dialog.className='errand-dialog';dialog.hidden=true;dialog.setAttribute('role','dialog');dialog.setAttribute('aria-modal','true');dialog.setAttribute('aria-label','街坊跑腿對話');
+  dialog.innerHTML='<small>街坊跑腿</small><h2></h2><p></p><div><button type="button" data-confirm></button><button type="button" data-close>稍後再說</button></div>';
+  hud.append(dialog);
+  const meshes=points.map(pt=>{
+    const npc=new THREE.Group();npc.position.set(pt.x,.18,pt.z);
+    const body=new THREE.Mesh(new THREE.CapsuleGeometry(.26,.85,4,8),new THREE.MeshStandardMaterial({color:pt.color,roughness:.85}));body.position.y=.9;npc.add(body);
+    const head=new THREE.Mesh(new THREE.SphereGeometry(.2,16,12),new THREE.MeshStandardMaterial({color:0xc99778,roughness:.9}));head.position.y=1.65;npc.add(head);
+    const canvas=document.createElement('canvas');canvas.width=512;canvas.height=96;const ctx=canvas.getContext('2d');ctx.fillStyle='#141925';ctx.fillRect(0,0,512,96);ctx.font='bold 36px sans-serif';ctx.fillStyle='#ffffff';ctx.textAlign='center';ctx.fillText(pt.name,256,60);
+    const label=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(canvas),depthTest:false}));label.position.y=2.6;label.scale.set(3.7,.7,1);npc.add(label);
+    const ring=new THREE.Mesh(new THREE.RingGeometry(.6,.8,32),new THREE.MeshBasicMaterial({color:pt.color,side:THREE.DoubleSide}));ring.rotation.x=-Math.PI/2;ring.position.y=.015;npc.add(ring);scene.add(npc);return {npc,ring};
+  });
+  const text=['前往紫色標記，與街坊委託人對話。','前往黃色標記，向街角取貨處領取包裹。','前往綠色標記，把包裹交給街坊收件人。','街坊跑腿已完成。下一階段：看房與租房（尚未實作）。'];
+  function distance(){const pt=points[stage];return pt?Math.hypot(player.position.x-pt.x,player.position.z-pt.z):Infinity;}
+  function close(){dialog.querySelector('[data-confirm]').blur();dialog.hidden=true;dialogOpen=false;}
+  dialog.querySelector('[data-close]').onclick=close;
+  function refresh(){goal.textContent=text[stage];wallet.textContent='測試餘額：'+balance+' VE'+(stage===2?' ｜攜帶：委託包裹':'');}
+  function interact(){
+    if(dialogOpen||stage>=3||distance()>2.5)return;
+    const titles=['街坊委託人','街角取貨處','街坊收件人'];
+    const lines=['能幫我取一份包裹，送給前面的街坊嗎？可步行完成，測試報酬 300 VE；此金額尚未定案。','這是委託包裹。領取後請送到綠色標記的收件人。','確認將委託包裹交給我嗎？交付後本次測試任務只結算一次。'];
+    const actions=['接取任務','領取包裹','交付並結算'];
+    const expectedStage=stage;dialog.querySelector('h2').textContent=titles[stage];dialog.querySelector('p').textContent=lines[stage];const button=dialog.querySelector('[data-confirm]');button.textContent=actions[stage];
+    button.onclick=()=>{if(stage!==expectedStage||distance()>2.5){close();return;}stage++;if(stage===3)balance+=reward;close();refresh();};
+    dialog.hidden=false;dialogOpen=true;button.focus();
+  }
+  addEventListener('keydown',e=>{if(e.key==='Escape')close();});
+  refresh();
+  return {interact,update(riding){
+    meshes.forEach((m,i)=>{m.ring.visible=i===stage;});
+    if(dialogOpen&&distance()>2.5)close();
+    if(stage>=3){hint.hidden=true;return;}
+    hint.hidden=false;hint.textContent=riding?'請先按 E 下車，再與任務人物互動':distance()<=2.5?'按 F 與'+points[stage].name+'互動':points[stage].name+' · '+Math.ceil(distance())+' 公尺';
+  }};
 }
